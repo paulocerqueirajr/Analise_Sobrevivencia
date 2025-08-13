@@ -1,15 +1,3 @@
----
-format: html
-editor: source
-lang: pt
----
-
-![](figuras/ppgme.jpg){.absolute top=5 left=1700 height="80"  fig-align="center"}
-
-
-<p style="text-align: center;">Universidade Federal do Pará - UFPA </p>
-<p style="text-align: center;">Instituto de Ciências Exatas e Naturais - ICEN </p>
-<p style="text-align: center;">Programa de Pós-Graduação em Matemática e Estatística - PPGME </p>
 
 
 **Disciplina:** Análise de Sobrevivência e Confiabilidade <br>
