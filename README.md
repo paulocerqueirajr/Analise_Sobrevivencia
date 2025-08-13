@@ -1,504 +1,77 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
+---
+format: html
+editor: source
+lang: pt
+---
 
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.549">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-
-<title>ementaas</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
-  vertical-align: middle;
-}
-</style>
+![](figuras/ppgme.jpg){.absolute top=5 left=1700 height="80"  fig-align="center"}
 
 
-<script src="EmentaAS_files/libs/clipboard/clipboard.min.js"></script>
-<script src="EmentaAS_files/libs/quarto-html/quarto.js"></script>
-<script src="EmentaAS_files/libs/quarto-html/popper.min.js"></script>
-<script src="EmentaAS_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="EmentaAS_files/libs/quarto-html/anchor.min.js"></script>
-<link href="EmentaAS_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="EmentaAS_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="EmentaAS_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="EmentaAS_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="EmentaAS_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<p style="text-align: center;">Universidade Federal do Pará - UFPA </p>
+<p style="text-align: center;">Instituto de Ciências Exatas e Naturais - ICEN </p>
+<p style="text-align: center;">Programa de Pós-Graduação em Matemática e Estatística - PPGME </p>
 
 
-</head>
+**Disciplina:** Análise de Sobrevivência e Confiabilidade <br>
+**Carga horária:** 60h <br>
+**Professor:** Paulo Cerqueira Jr. - cerqueirajr@ufpa.br - [https://github.com/paulocerqueirajr](https://https://github.com/paulocerqueirajr)</h5> 
 
-<body class="fullcontent">
-
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
-<main class="content" id="quarto-document-content">
-
-
-
-
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="figuras/ppgme.jpg" class="absolute quarto-figure quarto-figure-center figure-img" data-top="5" data-left="1700" height="80"></p>
-</figure>
-</div>
-<p style="text-align: center;">
-Universidade Federal do Pará - UFPA
-</p>
-<p style="text-align: center;">
-Instituto de Ciências Exatas e Naturais - ICEN
-</p>
-<p style="text-align: center;">
-Programa de Pós-Graduação em Matemática e Estatística - PPGME
-</p>
-<strong>Disciplina:</strong> Análise de Sobrevivência e Confiabilidade <br> <strong>Carga horária:</strong> 60h <br> <strong>Professor:</strong> Paulo Cerqueira Jr.&nbsp;- cerqueirajr@ufpa.br - <a href="https://https://github.com/paulocerqueirajr">https://github.com/paulocerqueirajr</a>
-
-<br>
+<br/>
 <hr>
-<section id="ementa" class="level3">
-<h3 class="anchored" data-anchor-id="ementa">Ementa</h3>
-<p>Conceitos Básicos em Análise de Sobrevivência; Estimação de modelos não paramétricos; Comparação de curvas de sobrevivência; Estimação de modelos paramétricos; Seleção de modelos; Modelos de Regressão. Adequação dos Modelos Ajustados.</p>
-</section>
-<section id="programa" class="level3">
-<h3 class="anchored" data-anchor-id="programa">Programa</h3>
-<ol type="1">
-<li><p><strong>Conceitos Básicos em Análise de Sobrevivência:</strong> Tempo de Falha, Censura, Truncamento, Função de Sobrevivência, Função de Taxa de Falha ou de Risco, Relação entre as funções. O pacote <code>survival</code> do software <code>R</code>.</p></li>
-<li><p><strong>Estimação de Modelos Não-Paramétricos:</strong> Estimação na Ausência de Censura, Estimador de Kaplan-Meier, Estimador de Nelson-Aalen e Comparação de curvas de sobrevivência.</p></li>
-<li><p><strong>Estimação de Modelos Paramétricos:</strong> Modelos Probabilísticos para o Tempo de Sobrevivência: Exponencial, Weibull, Gama, Log- Normal, Log-Logística e outras distribuições de probabilidade. Estimação dos parâmetros do modelo: Método de Máxima Verossimilhança. Seleção de modelos e diagnóstico.</p></li>
-<li><p><strong>Modelos paramétricos de regressão:</strong> tempo de vida acelerado e riscos proporcionais; Modelo de Cox: estimação e testes; Verificação da adequação de modelos.</p></li>
-<li><p><strong>Tópicos especiais:</strong> Abordagem Bayesiana, Censura intervalar, modelos com fração de cura, riscos competitivos, modelos com fragilidade, eventos recorrentes.</p></li>
-</ol>
-</section>
-<section id="avaliações" class="level3">
-<h3 class="anchored" data-anchor-id="avaliações">Avaliações</h3>
-<ul>
-<li>Os (as) alunos (as) farão um trabalho com análise de dados e uma prova teórica. As avaliações (P1 ,P2 , P3 e P4 ) acontecerão da seguinte forma:</li>
-</ul>
-<p>P1 – relatório parcial do Trabalho (1 e 2)</p>
-<p>P2 – relatório final do Trabalho (3, 4 e 5)</p>
-<p>P3 – Apresentação dos trabalhos</p>
-<p>P4 – Apresentação de um artigo sobre um tema descrito nos tópicos especiais.</p>
-<ul>
-<li>A Média Final (MF) será dada por:</li>
-</ul>
-<p>MF=(2<em>P1+3</em>P2+3<em>P3+2</em>P4) ∕ 10</p>
-<ul>
-<li>A Média Final para aprovação é, no mínimo, 5. As datas das avaliações serão definidas juntamente com os discentes nas primeiras semanas de adaptação.</li>
-</ul>
-</section>
-<section id="bibliografia" class="level3">
-<h3 class="anchored" data-anchor-id="bibliografia">Bibliografia</h3>
-<ol type="1">
-<li><p>COLOSIMO, E.A.; GIOLO, S.R. Análise de Sobrevivência Aplicada. São Paulo: Blucher, 2º Edição, Projeto Fisher, 2024.</p></li>
-<li><p>KLEIN, J.P.; MOESCHBERGER, M.L. Survival Analysis: techniques for censored and truncated data. 2nd ed., New York: Springer, 2003.</p></li>
-<li><p>COLLET, D. Modelling Survival Data in Medical Research, 4th ed., London: Chapman &amp; Hall, 2024.</p></li>
-<li><p>HOSMER, D.W.; LEMESHOW, S. Applied Survival Analysis. New York: John Wiley &amp; Sons, 1999.</p></li>
-<li><p>CARVALHO et al.&nbsp;Análise de Sobrevida: teoria e aplicações em saúde. Rio de Janeiro: Fiocruz, 2º Edição, 2011.</p></li>
-<li><p>Artigos em www.periodicos.capes.gov.br e outros sites.</p></li>
-</ol>
-</section>
 
-</main>
-<!-- /main column -->
-<script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
-      }
-    }
-    return false;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copiada");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copiada");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
-          }
-        }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
-        }
-        return container.innerHTML
-      } else {
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(note);
-        }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      // TODO in 1.5, we should make sure this works without a callout special case
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
-      }
-    }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
-          }
-        } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
-            if (note !== null) {
-              const html = processXRef(id, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
-      });
-    }
-  }
-});
-</script>
-</div> <!-- /content -->
+### Ementa
+ 
+ 
+Conceitos Básicos em Análise de Sobrevivência; Estimação de modelos não paramétricos; Comparação
+de curvas de sobrevivência; Estimação de modelos paramétricos; Seleção de modelos; Modelos de Regressão. Adequação dos Modelos Ajustados.
+ 
+ 
+### Programa 
+ 
+1. **Conceitos Básicos em Análise de Sobrevivência:** Tempo de Falha, Censura, Truncamento, Função de Sobrevivência, Função de Taxa de Falha ou de Risco, Relação entre as funções. O pacote `survival` do software `R`.
+
+2.  **Estimação de Modelos Não-Paramétricos:** Estimação na Ausência de Censura, Estimador de Kaplan-Meier, Estimador de Nelson-Aalen e Comparação de curvas de sobrevivência.
+ 
+
+3. **Estimação de Modelos Paramétricos:** Modelos Probabilísticos para o Tempo de Sobrevivência: Exponencial, Weibull, Gama, Log- Normal, Log-Logística e outras distribuições de probabilidade. Estimação dos parâmetros do modelo: Método de Máxima Verossimilhança. Seleção de modelos e diagnóstico.
+
+4. **Modelos paramétricos de regressão:** tempo de vida acelerado e riscos proporcionais; Modelo de Cox: estimação e testes; Verificação da adequação de modelos. 
+
+5. **Tópicos especiais:** Abordagem Bayesiana, Censura intervalar, modelos com fração de cura, riscos competitivos, modelos com fragilidade, eventos recorrentes.
+
+### Avaliações
+
+- Os (as) alunos (as) farão um trabalho com análise de dados e uma prova teórica. As avaliações (P1 ,P2 ,
+P3 e P4 ) acontecerão da seguinte forma:
+
+ P1 – relatório parcial do Trabalho (1 e 2)
+ 
+ P2 – relatório final do Trabalho (3, 4 e 5)
+ 
+ P3 – Apresentação dos trabalhos
+ 
+ P4 – Apresentação de um artigo sobre um tema descrito nos tópicos especiais.
+ 
+- A Média Final (MF) será dada por:
+
+MF=(2*P1+3*P2+3*P3+2*P4) ∕ 10
+
+- A Média Final para aprovação é, no mínimo, 5. As datas das avaliações serão definidas juntamente com os discentes nas primeiras semanas de adaptação.
+
+
+### Bibliografia
+
+1. COLOSIMO, E.A.; GIOLO, S.R. Análise de Sobrevivência Aplicada. São Paulo: Blucher, 2º Edição, Projeto Fisher, 2024.
+
+2. KLEIN, J.P.; MOESCHBERGER, M.L. Survival Analysis: techniques for censored and truncated data. 2nd ed., New York: Springer, 2003.
+
+3. COLLET, D. Modelling Survival Data in Medical Research, 4th ed., London: Chapman & Hall, 2024.
+
+4. HOSMER, D.W.; LEMESHOW, S. Applied Survival Analysis. New York: John Wiley & Sons, 1999.
+
+5. CARVALHO et al. Análise de Sobrevida: teoria e aplicações em saúde. Rio de Janeiro: Fiocruz, 2º Edição, 2011.
+
+8. Artigos em www.periodicos.capes.gov.br e outros sites.
 
 
 
-
-</body></html>
