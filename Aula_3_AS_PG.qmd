@@ -1,0 +1,519 @@
+---
+format: 
+  revealjs:
+    theme: ["theme/q-theme.scss"]
+    slide-number: c/t
+    #logo: "https://www.faest.icen.ufpa.br/images/110.png"
+    #footer: "[https://github.com/paulocerqueirajr](https://https://github.com/paulocerqueirajr)"
+    code-copy: true
+    center-title-slide: false
+highlight-style: a11y
+code-link: true
+height: 1080
+width: 1900
+execute: 
+  eval: true
+  echo: true
+lang: pt
+---
+
+<h1> Análise de sobrevivência e  </h1>
+<h1>confiabilidade<h1>
+<h2> Técnicas não-paramétricas </h2>
+
+<hr>
+
+<br>
+
+<h3> Prof. Paulo Cerqueira Jr <br>
+Programa de Pós-Graduação em Matemática e Estatística - PPGME <br> 
+Instituto de Ciências Exatas e Naturais - ICEN
+</h3>
+
+<h3>  </h3>
+<br>
+
+<h3> [https://github.com/paulocerqueirajr](https://https://github.com/paulocerqueirajr)
+
+![](imagens/github.jpg){.absolute top=700 left=845 height="80"}
+
+![](imagens/ppgme.jpg){.absolute top=5 left=1650 height="300"}
+
+
+
+# [Introdução]{style="float:right;text-align:right;"} {background-color="#154D71"}
+
+## Introdução
+<hr>
+
+
+* Definir quais o métodos não paramétricos mais importantes em análise de sobrevivência;
+* Estimar a função de sobrevivência usando o estimador de Kaplan-Meier;
+* Estimar a função de taxa de falha acumulada via estimador de Nelson-Aalen;
+* Intervalos de confiança;
+* Comparar curvas via teste de Log-Rank e Teste de Peto.
+
+
+## Estimador de função importantes
+<hr>
+
+* Os métodos até aqui apresentados levam em consideração dados na ausência de censura.
+
+
+* Duas formas não paramétricas de estimação das funções de sobrevivência:
+
+   - Kaplan-Meier: Estimador para $S(t)$.
+   - Nelson-Aalen: Estimador para $H(t)$.
+
+
+:::{.callout-warning}
+## Importante:
+
+* Ambas técnicas **envolvem censura**.
+
+* Sem suposições sobre a distribuição do tempo.
+:::
+
+## Estimador de Kaplan-Meier
+### Introdução
+<hr>
+
+* O estimador não-paramétrico de Kaplan-Meier, proposto por Kaplan e Meier (1958), para estimar a função de sobrevivência.
+* Leva em consideração **observações censuradas**.
+* A probabilidade de sobrevida até o tempo $t$ é estimada considerando que a sobrevivência até cada tempo é independente da sobrevivência até outros tempos.
+* A probabilidade de chegar até o tempo $t$ é o produto da probabilidade de chegar até cada um dos tempos anteriores.
+* Estimador produto (ou estimador limite produto) 
+
+
+## Estimador de Kaplan-Meier
+<hr>
+
+:::{.callout-warning}
+## Construção do estimador:
+
+* Sejam $t_1 < t_2 < \dots < t_m$ os $m$ tempos onde ocorreram os eventos;
+* $R(t_j)$: é o total de pessoas a risco no tempo $t_j$.
+* $\Delta N(t_j)$: é o número de eventos ocorridos precisamente em $t_j$.
+* Para os $m$ tempos $t_j$ em que ocorre um evento, a
+probabilidade de sobrevivência será estimada pelo número dos
+que sobreviveram até aquele tempo $(R(t_j)-\Delta N(t_j))$ sobre os que estavam em risco naquele tempo $(R(t_j))$.
+* Como os eventos são independentes, $S(t)$ é o produto das probabilidades de sobrevivência a cada tempo $t_j \leq t$.
+
+:::
+
+
+## Estimador de Kaplan-Meier
+<hr>
+
+* Dessa forma, temos a seguinte expressão:
+
+$$\hat{S}_{KM}(t)=\dfrac{R(t_{1})-\Delta N(t_{1})}{R(t_{1})}\times \dfrac{R(t_{2})-\Delta N(t_{2})}{R(t_{2})}\times\dots \times \dfrac{R(t_{m})-\Delta N(t_{m})}{R(t_{m})},$$
+
+ou simplesmente
+
+$$\hat{S}_{KM}(t)=\prod_{j:t_{j}\leq t}\dfrac{R(t_{j})-\Delta N(t_{j})}{R(t_{j})}=\prod_{j:t_{j}\leq t}1-\dfrac{\Delta N(t_{j})}{R(t_{j})}.$$
+
+* A mesma expressão pode ser apresentada da forma recursiva
+
+$$\hat{S}_{KM}(t_{j})=\hat{S}_{KM}(t_{j-1})\times\dfrac{R(t_{j})-\Delta N(t_{j})}{R(t_{j})}.$$
+
+
+## Estimador de Kaplan-Meier
+<hr>
+
+::: columns
+
+:::: column
+
+<br/>
+<br/>
+
+* No `R`, o estimador de Kaplan-Meier está implementado na função `survfit`.
+
+* Deve ser aplicada em um objeto `Surv`. 
+
+
+::::
+
+:::: column
+Para os dados de câncer no ovário:
+
+```{r fig1, echo=FALSE, comment="", warning=FALSE, message=FALSE, fig.width=8, fig.height=8}
+require(survival)
+
+#--- Exemplo de dados:
+
+data(package="survival")
+
+#--- Dados de cancer no ovário:
+
+dados <- survival::ovarian
+
+#--- Usando a função surv:
+
+objsurv <- Surv(dados$futime,  dados$fustat)
+
+#--- EKM:
+
+ekm <- survfit(Surv(dados$futime,  dados$fustat)~1)
+plot(ekm, xlab="Tempo", ylab="S(t) estimada", mark.time=TRUE)
+
+```
+::::
+:::
+
+* `Note que temos um comportamento de função escada.`
+
+## Estimador de Kaplan-Meier
+<hr>
+
+::: columns
+
+:::: column
+<br/>
+
+
+* Usando as relações entre as funções podemos usar a propriedade de invariância para estimar qualquer das funções.
+
+* A função de taxa de falha acumulada via estimador de KM é dada por
+
+$$\hat{H}_{KM}(t)=-\ln \hat{S}_{KM}(t)$$
+
+* No `R`, basta usar o argumento `cumhaz=TRUE`, na função `plot`.
+
+::::
+
+:::: column
+
+
+```{r fig2, echo=FALSE, comment="", warning=FALSE, message=FALSE,fig.width=8, fig.height=8}
+
+plot(ekm, xlab="Tempo", 
+  ylab="H(t) estimada", mark.time=TRUE, 
+     cumhaz = TRUE )
+
+```
+::::
+:::
+
+## Estimador de Kaplan-Meier 
+### Propriedades
+<hr>
+
+* Quanto as principais propriedades do estimador de Kaplan-Meier, estas consistem basicamente em:
+
+   - é não-viciado para amostras grandes,
+   - é fracamente consistente,
+   - converge assintoticamente para um processo gaussiano e
+   - é estimador de máxima verossimilhança de $S(t)$.
+
+
+:::{.callout-note} 
+## Notas:
+
+* A consistência e normalidade assinótica de $\hat{S}(t)$ foram provadas, sob certas condições de regularidade, por Breslow e Crowley (1974) e Meier (1975) 
+
+* No artigo original, Kaplan e Meier (1958) mostram que $\hat{S}(t)$ é o EMV de $S(t)$.
+
+:::
+
+
+## Estimador de Kaplan-Meier 
+### Intervalos de confiança
+<hr>
+
+* Para construir intervalos de confiança e testar hipóteses para $S(t)$, faz-se necessário avaliar a precisão do estimador de Kaplan-Meier.
+
+
+* A expressão da variância do EKM é dada por
+
+$$Var(\hat{S}(t))=\left[\hat{S}(t)\right]^{2} \sum_{j:t_{j}<t}\dfrac{\Delta N(t_{j})}{R(t_{j})(R(t_{j})-\Delta N(t_{j}))},$$
+a expressão é chamada de **fórmula de Greenwood**. 
+
+* Logo, como $\hat{S}(t)$, para um $t$ fixo, tem distribuição assintótica Normal,
+
+$$\hat{S}(t)\pm z_{\alpha/2}\sqrt{\hat{Var}\left(\hat{S}(t)\right)}.$$
+
+## Estimador de Kaplan-Meier 
+### Intervalos de confiança
+<hr>
+
+:::{.callout-note} 
+## Problemas:
+
+Para valores extremos de $t$, este intervalo de confiança pode apresentar **limite inferior negativo ou limite superior maior do que 1**.
+:::
+
+
+
+:::{.callout-note} 
+## Solução:
+Nesses casos, o problema é resolvido utlizando uma transformação para $S(t)$.
+
+Por exemplo, $\hat{U}(t) = log[-log( \hat{S}(t))]$ que têm variância assintótica estimada por
+
+$$\hat{Var}(\hat{S}(t))=\dfrac{\dfrac{\sum_{j:t_{j}<t}\Delta N(t_{j})}{R(t_{j})(R(t_{j})-\Delta N(t_{j}))}}{\left[\sum_{j:t_{j}<t}\log\left(\dfrac{R(t_{j})-\Delta N(t_{j})}{R(t_{j})}\right)\right]^2}.$$
+
+:::
+
+## Estimador de Kaplan-Meier 
+### Intervalos de confiança
+<hr>
+
+Dessa forma o intervalo de confiança é dado por
+
+$$\hat{S}(t)^{\exp\left\{\pm \sqrt{\hat{Var}(\hat{U}(t))} \right\}}.$$
+
+que assume valores no intervalo $[0,1]$.
+
+
+## Estimador de Nelson-Aalen 
+### Introdução
+<hr>
+
+* Um estimador para $H(t)$ foi inicialmente proposto por Nelson (1972) e retomado por Aalen (1978) que provou suas propriedades assintóticas usando processos de contagem.
+
+Uma alternativa para estimar a função de taxa de falha é utilizar o estimador de Nelson-Aalen, dado por
+
+$$\hat{H}_{NA}(t)=\sum_{t_{j}\leq t}\dfrac{N(t_{j})}{R(t_{j})}.$$
+
+   - Indicado para amostras muito pequenas.
+   - Equivalente ao K-M pra amostras grandes
+
+## Estimador de Nelson-Aalen 
+### Exemplo
+<hr>
+
+::: columns
+:::: column
+
+```{r fig3, comment="", warning=FALSE,message=FALSE,fig.width=8, fig.height=8}
+
+ENA <- survfit(coxph(Surv(dados$futime,  dados$fustat)~1))
+plot(ENA, xlab="Tempo", ylab="S(t) estimada NA",mark.time=TRUE)
+
+```
+::::
+
+:::: column
+```{r fig4, comment="", warning=FALSE,message=FALSE,fig.width=8, fig.height=8}
+
+plot(ENA, xlab="Tempo", ylab="H(t) estimada NA", mark.time=TRUE, cumhaz = TRUE, conf.int = FALSE)
+
+```
+::::
+:::
+
+## Algumas medidas de resumo
+### Tempo mediano:
+<hr>
+
+
+
+* Uma informação muito útil é o tempo mediano de vida. 
+
+* Como a curva de Kaplan-Meier é uma função escada, a estimativa mais adequada para a mediana é novamente obtida através de uma interpolação linear.
+
+* O tempo mediano é dado por:
+
+$$\hat{t}_{mediano}=\min \{t_{j}\mid \hat{S}(t_{j})\leq 0.5\},$$
+
+
+em que $j$ é o índice dos tempos observados de ocorrência do evento.
+
+
+
+## Algumas medidas de resumo
+### Tempo mediano:
+<hr>
+
+::: columns
+:::: column
+\scriptsize
+```{r, message=FALSE, warning=FALSE, comment=""}
+ekm
+```
+::::
+
+:::: column
+
+```{r fig5, comment="", warning=FALSE,message=FALSE,fig.width=8, fig.height=8}
+plot(ekm, xlab="Tempo", 
+  ylab="H(t) estimada", mark.time=TRUE)
+segments(x0=0, y0=0.5, x1=464, y1=0.5, lty=3, col="red")
+segments(x0=464, y0=0, x1=464, y1=0.5, lty=3, col="red")
+
+segments(x0=0, y0=0.5, x1=638, y1=0.5, lty=3, col="red")
+segments(x0=638, y0=0, x1=638, y1=0.5, lty=3, col="red")
+
+
+```
+
+
+::::
+:::
+
+## Algumas medidas de resumo
+### Tempo médio:
+<hr>
+
+
+* Outra quantidade que pode ser de interesse é o tempo médio de vida do paciente.
+
+* Esta quantidade, no entanto, nem sempre é estimada adequadamente utilizando estimadores não-paramétricos em estudos incluindo censuras.
+
+* O tempo médio pode ser estimado usando a seguinte expressão,
+
+$$\hat{t}_{m}=t_{1}+\sum_{j=1}^{k-1}\hat{S}(t_{j})(t_{j+1}-t_{j}),$$
+
+em que $t_{1}, t_{2}, \dots, t_{k}$ são os $k$ tempos distintos e ordenados de falha.
+
+
+
+## Algumas medidas de resumo
+### Algumas considerações:
+<hr>
+
+* Se o maior tempo observado for uma censura;
+* Muito comum em estudos clínicos;
+* Neste caso a curva de Kaplan-Meier não atinge o valor zero e o valor do tempo médio de vida fica subestimado;
+* Tal estimativa deve ser interpretada com bastante cuidado ou talvez até mesmo evitada;
+* Usar o tempo mediano;
+* A mediana deve somente ser evitada se o número de censuras for maior que o de falhas.
+
+
+## EKM estratificado
+<hr>
+
+Podemos ter mais de uma curva de sobrevivência estimada via KM.
+
+::: columns
+
+:::: column
+
+```{r, comment="", warning=FALSE, message=FALSE}
+ekm_strat <- survfit(Surv(dados$futime,  dados$fustat)~dados$resid.ds)
+ekm_strat
+```
+
+::::
+
+:::: column
+
+
+```{r, comment="", warning=FALSE,message=FALSE,fig.width=8, fig.height=8}
+
+plot(ekm_strat , xlab="Tempo", ylab="S(t) estimada", mark.time=TRUE, lty=c(1,2))
+legend("bottomleft", c("Não", "Sim"), lty=c(1,2), bty="n")
+
+```
+::::
+:::
+
+
+## Teste de comparação de curvas
+### Log-rank
+<hr>
+
+* Para comparar curvas de sobrevivência devemos recorrer a testes de hipóteses
+
+* O teste Log-rank ou Mantel Haenszel, é o mais usual e compara os valores observados e esperados de cada estrato, supondo que o risco é o mesmo em todos os grupos.
+
+* Testar se as curvas de sobrevivências são iguais é equivalente em comparar se o risco da ocorrência do evento é semelhante em cada estrato.
+
+As hipóteses:
+
+$$H_{0}: \text{não há diferença entre estratos}$$
+
+ou
+
+$$H_{0}: h_{1}(t)=h_{2}(t)=\dots=h_{k}(t)$$
+
+em que $k$ é o número de estratos.
+
+
+## Teste de comparação de curvas
+### Log-rank
+<hr>
+
+* Distribuição esperada de eventos iguais em todos os estratos
+
+$$E_{k}(t)=N(t)\dfrac{R_{k}(t)}{R(t)}.$$
+
+* Estatística de teste log-rank para dois estratos ($k = 2$):
+
+$$\text{Log-rank}=\dfrac{(O_{1}-E_{1})^2}{Var(O_{1}-E_{1})},$$
+
+
+$O_1 =$ total de eventos observados no estrato 1.
+
+$E_1 =$ total de eventos esperados no estrato 1.
+
+
+## Teste de comparação de curvas
+### Log-rank
+<hr>
+
+* A variância, que entra no cálculo como um fator de padronização, tem a fórmula (para $k = 2$):
+
+$$Var(O_{1}-E_{1}) = \sum_{t}\dfrac{R_{1}(t)R_{2}(t)\Delta N(t)[R(t)-\Delta N(t)]}{R(t)^{2}[R(t)-1]}.$$
+A estatística log-rank, sob a hipótese nula, segue uma distribuição $\chi^2$, com $k-1$ graus de liberdade.
+
+
+
+## Teste de comparação de curvas
+### Peto
+<hr>
+
+* Dá maior peso às diferenças (ou semelhanças), no início da curva.
+
+
+* Onde se concentra a maior parte dos dados e por isso é mais
+informativa. 
+
+* Usa um ponderador $S(t)$ no estimador.
+
+* A estatística de teste Peto para dois estratos ($k = 2$):
+
+$$\text{Peto}=\dfrac{(O_{1}-E_{1})^2}{Var(O_{1}-E_{1})},$$
+
+em que,
+
+$$O_{1}-E_{1}=\sum_{t_{j}} S(t_{j})(O_{1}(t_{j})-E_{1}(t_{j})).$$
+
+* Também a estatística Peto segue aproximadamente uma distribuição $\chi^2$ com $k-1$ graus de liberdade.
+
+
+## Exemplo de comparação de curvas
+### Log-Rank
+<hr>
+
+* Para os dados de câncer no ovário:
+
+```{r test1, echo=TRUE, comment="", warning=FALSE, message=FALSE}
+
+survdiff(Surv(dados$futime,  dados$fustat)~dados$resid.ds,rho=0)
+
+```
+
+
+## Exemplo de comparação de curvas
+### Peto
+<hr>
+
+
+Para os dados de câncer no ovário:
+
+
+```{r test2, echo=TRUE, comment="", warning=FALSE, message=FALSE}
+
+survdiff(Surv(dados$futime,  dados$fustat)~dados$resid.ds, rho=1)
+
+```
+
+
+
+
+
+
+

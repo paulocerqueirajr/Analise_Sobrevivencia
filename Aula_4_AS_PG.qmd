@@ -1,0 +1,998 @@
+---
+format: 
+  revealjs:
+    theme: ["theme/q-theme.scss"]
+    slide-number: c/t
+    #logo: "https://www.faest.icen.ufpa.br/images/110.png"
+    #footer: "[https://github.com/paulocerqueirajr](https://https://github.com/paulocerqueirajr)"
+    code-copy: true
+    center-title-slide: false
+highlight-style: a11y
+code-link: true
+height: 1080
+width: 1900
+execute: 
+  eval: true
+  echo: true
+lang: pt
+---
+
+<h1> Análise de sobrevivência e  </h1>
+<h1>confiabilidade<h1>
+<h2> Modelos paramétrica </h2>
+
+<hr>
+
+<br>
+
+<h3> Prof. Paulo Cerqueira Jr <br>
+Programa de Pós-Graduação em Matemática e Estatística - PPGME <br> 
+Instituto de Ciências Exatas e Naturais - ICEN
+</h3>
+
+<h3>  </h3>
+<br>
+
+<h3> [https://github.com/paulocerqueirajr](https://https://github.com/paulocerqueirajr)
+
+![](imagens/github.jpg){.absolute top=700 left=845 height="80"}
+
+![](imagens/ppgme.jpg){.absolute top=5 left=1650 height="300"}
+
+
+
+# [Introdução]{style="float:right;text-align:right;"} {background-color="#154D71"}
+
+## Introdução
+<hr>
+
+
+* Agora iremos estudar modelo de probabilidade para dados de sobrevivência. 
+
+* Dessa forma, faremos suposições de distribuições de probabilidade para os tempos de falha ou evento.
+
+* Estas distribuições são bastante utilizadas, principalmente para produtos industriais, por se mostrarem adequadas para descrever estes tempos de vida. 
+* Os modelos paramétricos vêm sendo utilizados com mais
+frequência na área industrial do que na médica. 
+
+* A principal razão deste fato é que
+os estudos envolvendo componentes e equipamentos industriais podem ser planejados e consequentemente as fontes de perturbação (heterogeneidade) podem ser controladas.
+
+* Nestas condições a busca por um modelo paramétrico adequado fica facilitada e a análise estatística dos dados fica mais precisa.
+
+
+# [Distribuições para o tempo de sobrevivência]{style="float:right;text-align:right;"} {background-color="#154D71"}
+
+## Distribuições para o tempo de sobrevivência
+<hr>
+
+::: columns
+
+:::: column
+<br/>
+
+* Sendo $T$ uma variável aleatória representando o tempo de sobrevivência, qual a distribuição de probabilidade para representá-la?
+
+* Temos que pensar em uma distribuição de probabilidade `contínua` e `não negativa`.
+
+* Distribuição normal?
+
+* Forte assimetria com calda a direita.
+
+::::
+
+:::: column
+
+Tempos de sobrevivência de pacientes com transplante de fígado.
+
+
+```{r fig_AS4_1, comment="", warning=FALSE, message=FALSE, fig.width=8, fig.height=7}
+require(survival)
+
+#--- Histograma:
+
+hist(transplant$futime, main="", xlab="Tempos", ylab="Frequência")
+
+```
+
+::::
+:::
+
+
+## Distribuições para o tempo de sobrevivência
+<hr>
+
+> As distribuições de probabilidade:
+
+* Exponencial
+* Weibull
+* Lognormal
+* Gamma
+* Algumas distribuições mais sofisticadas:
+   - Gama Generalizada
+   - Exponencial por partes;
+   - Distribuições gama-g;
+   - Estáveis positivas.
+
+
+# [Distribuição exponencial]{style="float:right;text-align:right;"} {background-color="#154D71"}
+
+## Distribuições para o tempo de sobrevivência
+### Exponencial
+<hr>
+
+::: columns
+:::: column
+<br/>
+<br/>
+
+
+* Modelo mais simples.
+* O modelo exponencial não tem memória.
+* Único modelo com função de taxa de falha constante.
+* Ela tem sido extensivamente usada como um modelo para o tempo de vida de certos produtos e materiais.
+
+::::
+:::: column
+
+
+Função densidade:
+
+$$f(t)=\alpha\exp\{-\alpha t\} ,\quad t\geq 0.$$
+Função de sobrevivência:
+
+$$S(t)=\exp\{-\alpha t\} ,\quad t\geq 0.$$
+
+Função taxa de falha:
+
+$$h(t)=\alpha,\quad t\geq 0.$$
+Função taxa de falha acumulada:
+
+$$H(t)=-\ln(S(t))=\alpha t,\quad t\geq 0.$$
+
+Percentil $p$:
+
+$$t_{p}=-\log(1-p)/\alpha,\quad \alpha\geq 0$$
+
+::::
+:::
+
+## Distribuições para o tempo de sobrevivência
+### Exponencial
+<hr>
+
+```{r fig_AS4_2, echo=FALSE, comment="", warning=FALSE, message=FALSE, fig.width=12, fig.height=5, fig.align='center'}
+
+par(mfrow=c(1,3))
+
+x <- seq(0,6, length.out=1000)
+plot(x,dexp(x, rate = 1), type="l", lty=1, ylab="f(t)", xlab="Tempos", lwd=2)
+lines(x,dexp(x, rate = 0.7), type="l", lty=2, lwd=2)
+lines(x,dexp(x, rate = 0.5), type="l", lty=3, lwd=2)
+legend("topright", c(expression(alpha==1), expression(alpha==0.7), expression(alpha==0.5)), lty = c(1,2,3), lwd=2,bty="n" )
+
+
+plot(x,pexp(x, rate = 1, lower.tail = FALSE), type="l", lty=1, ylab="S(t)", xlab="Tempos", lwd=2)
+lines(x,pexp(x, rate = 0.7, lower.tail = FALSE), type="l", lty=2, lwd=2)
+lines(x,pexp(x, rate = 0.5, lower.tail = FALSE), type="l", lty=3, lwd=2)
+legend("topright", c(expression(alpha==1), expression(alpha==0.7), expression(alpha==0.5)), lty = c(1,2,3), lwd=2,bty="n" )
+
+
+plot(x,rep(1,length(x)), type="l", lty=1, ylab="h(t)", xlab="Tempos", ylim=c(0.3,1.3), lwd=2)
+lines(x,rep(0.7,length(x)), type="l", lty=2, lwd=2)
+lines(x,rep(0.5,length(x)), type="l", lty=3, lwd=2)
+legend("topright", c(expression(alpha==1), expression(alpha==0.7), expression(alpha==0.5)), lty = c(1,2,3), lwd=2,bty="n" )
+
+
+```
+
+
+## Distribuições para o tempo de sobrevivência
+### Weibull
+<hr>
+
+
+
+::: columns
+:::: column
+
+<br/>
+<br/>
+
+* O modelo foi proposto por Weibull (1951 e 1954).
+* O modelo foi proposto em situações de engenharia envolvendo fadiga de metais.
+* Este modelo é caracterizado por taxas de falha monótonas.
+* De acordo com o parâmetro de forma:
+  
+  $$
+  \begin{array}{cl}
+  \gamma>1 & \text{crescente}\\
+  \gamma=1 & \text{constante}\\
+  \gamma<1 & \text{decrescente}\\
+  \end{array}
+  $$
+
+::::
+:::: column
+
+
+Função densidade:
+
+$$f(t)=\gamma\alpha^{\gamma}t^{\gamma-1}\exp\{-(\alpha t)^\gamma\} ,\quad t\geq 0.$$
+Função de sobrevivência:
+
+$$S(t)=\exp\{-(\alpha t)^\gamma\} ,\quad t\geq 0.$$
+
+Função taxa de falha:
+
+$$h(t)=\gamma\alpha^{\gamma}t^{\gamma-1},\quad t\geq 0.$$
+Função taxa de falha acumulada:
+
+$$H(t)=(\alpha t)^\gamma,\quad t\geq 0.$$
+
+Percentil $p$:
+
+$$t_{p}=-\log(1-p)^{1/\gamma}/\alpha,\quad \alpha,\gamma> 0$$
+
+::::
+:::
+
+
+
+## Distribuições para o tempo de sobrevivência
+### Weibull
+<hr>
+
+```{r fig_AS4_3, echo=FALSE, comment="", warning=FALSE, message=FALSE, fig.width=12, fig.height=5}
+
+par(mfrow=c(1,3))
+
+x <- seq(0,6, length.out=1000)
+plot(x,dweibull(x, shape = 0.5, scale= 1 ), type="l", lty=1, ylab="f(t)", xlab="Tempos", lwd=2)
+lines(x,dweibull(x, shape = 1, scale= 1 ), type="l", lty=2, lwd=2)
+lines(x,dweibull(x, shape = 1.5, scale= 1 ), type="l", lty=3, lwd=2)
+legend("topright", c(expression(paste(alpha==1, gamma==0.5)), expression(paste(alpha==1, gamma==1)), expression(paste(alpha==1,gamma==1.5))), lty = c(1,2,3), lwd=2, bty="n" )
+
+
+plot(x,pweibull(x, shape = 0.5, scale= 1, lower.tail = FALSE), type="l", lty=1, ylab="S(t)", xlab="Tempos", lwd=2, ylim=c(0,1))
+lines(x,pweibull(x, shape = 1, scale= 1, lower.tail = FALSE), type="l", lty=2, lwd=2)
+lines(x,pweibull(x, shape = 1.5, scale= 1, lower.tail = FALSE), type="l", lty=3, lwd=2)
+legend("topright", c(expression(paste(alpha==1, gamma==0.5)), expression(paste(alpha==1, gamma==1)), expression(paste(alpha==1,gamma==1.5))), lty = c(1,2,3), lwd=2, bty="n" )
+
+
+plot(x,dweibull(x, shape = 0.5, scale= 1 )/pweibull(x, shape = 0.5, scale= 1, lower.tail = FALSE), type="l", lty=1, ylab="h(t)", xlab="Tempos", lwd=2, ylim=c(0,8))
+lines(x,dweibull(x, shape = 1, scale= 1 )/pweibull(x, shape = 1, scale= 1, lower.tail = FALSE), type="l", lty=2, lwd=2)
+lines(x,dweibull(x, shape = 1.5, scale= 1 )/pweibull(x, shape = 1.5, scale= 1, lower.tail = FALSE), type="l", lty=3, lwd=2)
+legend("topright", c(expression(paste(alpha==1, gamma==0.5)), expression(paste(alpha==1, gamma==1)), expression(paste(alpha==1,gamma==1.5))), lty = c(1,2,3), lwd=2, bty="n" )
+
+
+```
+
+
+
+## Distribuições para o tempo de sobrevivência
+### Lognormal
+<hr>
+
+
+::: columns
+:::: column
+
+<br/>
+<br/>
+
+* O modelo log-normal é, juntamente com o Weibull, um modelo
+importante em análise de sobrevivência.
+* Este modelo apresenta taxas de falhas não monótonas.
+
+::::
+:::: column
+Função densidade:
+
+$$f(t)=\dfrac{1}{\sqrt{2\pi} t\sigma}\exp\left\{ -\dfrac{1}{2\sigma^2}(\log(t)-\mu)^2  \right\} ,\quad t\geq 0.$$
+Função de sobrevivência:
+
+$$S(t)=\Phi\left\{\dfrac{-\log(t)+\mu}{\sigma}\right\} ,\quad t\geq 0.$$
+
+Função taxa de falha:
+
+$$h(t)=\dfrac{f(t)}{S(t)}$$.
+
+::::
+:::
+
+
+
+## Distribuições para o tempo de sobrevivência
+### Lognormal
+<hr>
+
+```{r fig_AS4_4, echo=FALSE, comment="", warning=FALSE, message=FALSE, fig.width=12, fig.height=5}
+
+par(mfrow=c(1,3))
+
+x <- seq(0,5, length.out=10000)
+plot(x,dlnorm(x, meanlog = 0, sdlog = 0.5 ), type="l", lty=1, ylab="f(t)", xlab="Tempos", lwd=2)
+lines(x,dlnorm(x, meanlog = 0, sdlog = 0.7 ), type="l", lty=2, lwd=2)
+lines(x,dlnorm(x, meanlog = 0, sdlog = 1.5 ), type="l", lty=3, lwd=2)
+lines(x,dlnorm(x, meanlog = 1, sdlog = 0.7 ), type="l", lty=4, lwd=2)
+lines(x,dlnorm(x, meanlog = 1, sdlog = 2 ), type="l", lty=5, lwd=2)
+legend("topright", c(expression(paste(mu==0, sigma==0.5)), expression(paste(mu==0, sigma==0.7)), expression(paste(mu==0, sigma==1.5)),
+expression(paste(mu==1, sigma==0.7)),
+expression(paste(mu==1, sigma==2))), lty = 1:5, lwd=2, bty="n" )
+
+
+plot(x,plnorm(x, meanlog = 0, sdlog = 0.5,lower.tail = FALSE ), type="l", lty=1, ylab="S(t)", xlab="Tempos", lwd=2)
+lines(x,plnorm(x, meanlog = 0, sdlog = 0.7,lower.tail = FALSE ), type="l", lty=2, lwd=2)
+lines(x,plnorm(x, meanlog = 0, sdlog = 1.5,lower.tail = FALSE ), type="l", lty=3, lwd=2)
+lines(x,plnorm(x, meanlog = 1, sdlog = 0.7,lower.tail = FALSE ), type="l", lty=4, lwd=2)
+lines(x,plnorm(x, meanlog = 1, sdlog = 2,lower.tail = FALSE ), type="l", lty=5, lwd=2)
+legend(2,1, c(expression(paste(mu==0, sigma==0.5)), expression(paste(mu==0, sigma==0.7)), expression(paste(mu==0, sigma==1.5)),
+expression(paste(mu==1, sigma==0.7)),
+expression(paste(mu==1, sigma==2))), lty = 1:5, lwd=2, bty="n" )
+
+plot(x,dlnorm(x, meanlog = 0, sdlog = 0.5 )/plnorm(x, meanlog = 0, sdlog = 0.5,lower.tail = FALSE ), type="l", lty=1, ylab="h(t)", xlab="Tempos", lwd=2, ylim=c(0,2.5))
+lines(x,dlnorm(x, meanlog = 0, sdlog = 0.7 )/plnorm(x, meanlog = 0, sdlog = 0.7,lower.tail = FALSE ), type="l", lty=2, lwd=2)
+lines(x,dlnorm(x, meanlog = 0, sdlog = 1.5 )/plnorm(x, meanlog = 0, sdlog = 1.5,lower.tail = FALSE ), type="l", lty=3, lwd=2)
+lines(x,dlnorm(x, meanlog = 1, sdlog = 0.7 )/plnorm(x, meanlog = 1, sdlog = 0.7,lower.tail = FALSE ), type="l", lty=4, lwd=2)
+lines(x,dlnorm(x, meanlog = 1, sdlog = 2 )/plnorm(x, meanlog = 1, sdlog = 2,lower.tail = FALSE ), type="l", lty=5, lwd=2)
+legend(2,2.5, c(expression(paste(mu==0, sigma==0.5)), expression(paste(mu==0, sigma==0.7)), expression(paste(mu==0, sigma==1.5)),
+expression(paste(mu==1, sigma==0.7)),
+expression(paste(mu==1, sigma==2))), lty = 1:5, lwd=2, bty="n" )
+
+```
+
+## Distribuições para o tempo de sobrevivência
+### Lognormal
+<hr>
+
+* Se $T$ tem distribuição log-normal, então $Y = \log T$ tem distribuição normal ou Gaussiana.
+* Observe que o modelo log-normal é definido em termos dos parâmetros da distribuição geradora normal. Ou seja,
+   - $\mu$ (parâmetro de escala da log-normal) é o parâmetro de locação da distribuição normal.
+   - $\sigma$ (parâmetro de forma da log-normal) é o parâmetro de escala da distribuição normal.
+  
+  
+  
+  
+## Distribuições para o tempo de sobrevivência
+### Gama
+<hr>  
+
+* O gama é outro modelo importante em análise de sobrevivência.
+* Mostramos a seguir as formas de $f(t)$, $S(t)$ e $h(t)$ para o modelo gama.
+
+Função densidade:
+
+$$f(t)=\dfrac{1}{\Gamma(k)\alpha^{k}}t^{k-1}\exp\left\{-\dfrac{t}{\alpha}\right\}, \quad t>0.$$
+
+Função de sobrevivência:
+
+$$S(t)=\int_{t}^{\infty}\dfrac{1}{\Gamma(k)\alpha^{k}}t^{k-1}\exp\left\{-\dfrac{t}{\alpha}\right\}, \quad t>0.$$
+  
+Função taxa de falha:
+
+$$h(t)=\dfrac{f(t)}{S(t)}, \quad t>0.$$
+
+
+## Distribuições para o tempo de sobrevivência
+### Gama
+<hr> 
+
+```{r fig_AS4_5, echo=FALSE, comment="", warning=FALSE, message=FALSE, fig.width=12, fig.height=5}
+
+par(mfrow=c(1,3))
+
+x <- seq(0,6, length.out=1000)
+plot(x,dgamma(x, shape = 1, rate = 1), type="l", lty=1, ylab="f(t)", xlab="Tempos", lwd=2)
+lines(x,dgamma(x, shape = 0.5, rate= 1), type="l", lty=2, lwd=2)
+lines(x,dgamma(x, shape = 3, rate = 2), type="l", lty=3, lwd=2)
+lines(x,dgamma(x, shape = 2, rate = 1), type="l", lty=4, lwd=2)
+legend("topright", c("gama(1,0;1)", "gama(0,5;1)", "gama(3,0;2)", "gama(2,0;1)"), lty = 1:4, lwd=2, bty="n" )
+
+
+plot(x,pgamma(x, shape = 1, scale = 1,lower.tail = FALSE), type="l", lty=1, ylab="S(t)", xlab="Tempos", lwd=2)
+lines(x,pgamma(x, shape = 0.5, rate = 1,lower.tail = FALSE), type="l", lty=2, lwd=2)
+lines(x,pgamma(x, shape = 3, rate = 2,lower.tail = FALSE), type="l", lty=3, lwd=2)
+lines(x,pgamma(x, shape = 2, rate = 1,lower.tail = FALSE), type="l", lty=4, lwd=2)
+legend("topright", c("gama(1,0;1)", "gama(0,5;1)", "gama(3,0;2)", "gama(2,0;1)"), lty = 1:4, lwd=2, bty="n" )
+
+plot(x,dgamma(x, shape = 1, rate = 1)/pgamma(x, shape = 1, rate = 1,lower.tail = FALSE), type="l", lty=1, ylab="S(t)", xlab="Tempos", lwd=2, ylim=c(0,4))
+lines(x,dgamma(x, shape = 0.5, rate= 1)/pgamma(x, shape = 0.5, rate = 1,lower.tail = FALSE), type="l", lty=2, lwd=2)
+lines(x,dgamma(x, shape = 3, rate= 2)/pgamma(x, shape = 3, rate = 2,lower.tail = FALSE), type="l", lty=3, lwd=2)
+lines(x,dgamma(x, shape = 2, rate = 1)/pgamma(x, shape = 2, rate = 1,lower.tail = FALSE), type="l", lty=4, lwd=2)
+legend("topright", c("gama(1,0;1)", "gama(0,5;1)", "gama(3,0;2)", "gama(2,0;1)"), lty = 1:4, lwd=2, bty="n" )
+
+```
+
+
+## Distribuições para o tempo de sobrevivência
+### Gama generalizado
+<hr>
+
+
+
+* O modelo gama generalizado tem um parâmetro de escala e dois de forma.
+
+Função densidade:
+
+$$f(t)=\dfrac{\gamma}{\Gamma(k)\alpha^{\gamma k}}t^{\gamma{k-1}}\exp\left\{-\left(\dfrac{t}{\alpha}\right)^2\right\}, \quad t>0.$$
+
+* Os principais modelos em análise de sobrevivência são casos particulares da gama generalizada:
+   - para $k = 1$ e $\gamma = 1$ tem-se $T \sim Exp(\alpha)$.
+   - para $k = 1$ tem-se $T \sim Weibull(\gamma, \alpha)$.
+   - para $\gamma = 1$ tem-se $T \sim Gama(k, \alpha)$.
+   - para $k \rightarrow \infty$ tem-se $T \sim log-normal$.
+  
+
+
+## Distribuições para o tempo de sobrevivência
+### Gama generalizado
+<hr>
+
+* O modelo gama generalizado é complexo mas útil na seleção de modelos.
+* Os parâmetros, ou uma função deles, não tem interpretação.
+* Difícil de ajustar computacionalmente. É comum obtermos falta de convergência.
+* O `R` ajusta o modelo gama generalizado no pacote `flexsurv`.
+
+## Distribuições para o tempo de sobrevivência
+### Loglogística
+<hr>
+
+
+::: columns
+
+:::: column
+
+<br/>
+<br/>
+
+
+
+* A distribuição log-logística fornece mais um ajuste paramétrico em análise de sobrevivência. 
+
+* A mesma tem várias forma de acordo com o parâmetro de forma beta $\beta$.
+
+* Permitindo várias formas da função de taxa de falha.
+
+::::
+:::: column
+
+<br/>
+<br/>
+
+A função de sobrevivência é dada por
+
+$$S(t)=1-F(t)=[1+(t/\alpha )^{{\beta }}]^{{-1}},\,$$
+
+A função taxa de falha
+
+$${\displaystyle h(t)={\frac {f(t)}{S(t)}}={\frac {(\beta /\alpha )(t/\alpha )^{\beta -1}}{1+(t/\alpha )^{\beta }}}.}$$
+::::
+:::
+
+
+## Distribuições para o tempo de sobrevivência
+### Loglogística
+<hr>
+
+
+```{r fig_AS4_7, echo=FALSE, comment="", warning=FALSE, message=FALSE, fig.width=12, fig.height=5}
+
+require(eha)
+
+par(mfrow=c(1,3))
+
+x <- seq(0,6, length.out=1000)
+plot(x,dllogis(x=x, shape = 0.9, scale = 1), type="l", lty=1, ylab="f(t)", xlab="Tempos")
+lines(x,dllogis(x=x, shape = 1, scale = 1), type="l", lty=2)
+lines(x,dllogis(x=x, shape = 1.2, scale = 1), type="l", lty=3)
+lines(x,dllogis(x=x, shape = 3, scale = 1), type="l", lty=4)
+legend("topright", c("llog(0,9;1)", "llog(1;1)", "llog(1,2;1)", "llog(3;1)"), cex=0.8, bty="n")
+
+
+plot(x,pllogis(q = x, shape = 0.9, scale = 1, lower.tail = FALSE), type="l", lty=1, ylab="s(t)", xlab="Tempos", ylim=c(0,1))
+lines(x,pllogis(q=x, shape = 0.9, scale = 1, lower.tail = FALSE), type="l", lty=2)
+lines(x,pllogis(q=x, shape = 0.9, scale = 1, lower.tail = FALSE), type="l", lty=3)
+lines(x,pllogis(q=x, shape = 0.9, scale = 1, lower.tail = FALSE), type="l", lty=4)
+legend("topright", c("llog(0,9;1)", "llog(1;1)", "llog(1,2;1)", "llog(3;1)"), cex=0.8, bty="n")
+
+
+plot(x,hllogis(x=x, shape = 0.9, scale = 1), type="l", lty=1, ylab="h(t)", xlab="Tempos", ylim=c(0,1.6))
+lines(x,hllogis(x=x, shape = 1, scale = 1), type="l", lty=2)
+lines(x,hllogis(x=x, shape = 1.2, scale = 1), type="l", lty=3)
+lines(x,hllogis(x=x, shape = 3, scale = 1), type="l", lty=4)
+legend("topright", c("llog(0,9;1)", "llog(1;1)", "llog(1,2;1)", "llog(3;1)"), cex=0.8, bty="n")
+```
+
+
+## Distribuições para o tempo de sobrevivência
+### Exponencial por partes (EP)
+<hr>
+
+
+
+* Segundo Ibrahim (2001), o EP é um dos modelos mais populares na modelagem semiparamétrica de dados de sobrevivência.
+* Apesar de ser paramétrico em um senso estrito, não impõe restrições quanto a forma da função taxa de falha, diferentemente de outros modelos paramétricos como: exponencial, Weibull e lognormal, entre outros.
+* EP é construído com base em uma aproximação da função taxa de falha por segmentos de retas, cujos comprimentos são determinados por uma grade de tempos $\tau$ que divide o eixo dos tempos em um número finito de intervalos. 
+* Matematicamente, a grade de tempos é definida como $\tau=\{s_{0}, s_{1},...,s_{b}\}$, em que $0=s_{0}< s_{1}<...<s_{b}=\infty$, que induz intervalos da forma $I_{j}=(s_{j-1},s_{j}]$, para $j=1, 2,...,b$. 
+
+
+
+
+## Distribuições para o tempo de sobrevivência
+### Exponencial por partes (EP)
+<hr>
+
+A função risco é definida da seguinte forma:
+
+$$h(t|\mathbf{\lambda}, \tau)=\lambda_{j},\ \  \mbox{se} \ \ t \ \in I_{j}, \lambda_{j}>0 \quad j=1,...,b,$$
+
+
+em que $\mathbf{\lambda}=(\lambda_{1}, \lambda_{2},..., \lambda_{b})^{\top}$. 
+	
+* A função taxa de falha acumulada e a função de sobrevivência são dadas por
+
+
+$$H(t|\mathbf{\lambda}, \tau)=\displaystyle\lambda_{j}(t-s_{j-1})+\sum_{g=1}^{j-1}\lambda_{g}(s_{g}-s_{g-1}) ~~~ \text{e}~~~ S(t|\mathbf{\lambda}, \tau)=\exp\left\{-\displaystyle\lambda_{j}(t-s_{j-1})+\sum_{g=1}^{j-1}\lambda_{g}(s_{g}-s_{g-1})\right\}.
+$$
+
+
+
+## Distribuições para o tempo de sobrevivência
+### Exponencial por partes (EP)
+<hr>
+
+
+$$\tau=\{0,2,4,5, \inf\}$$
+
+```{r fig_AS4_6, echo=FALSE, comment="", warning=FALSE, message=FALSE, fig.width=12, fig.height=5}
+
+require(eha)
+
+par(mfrow=c(1,3))
+
+lambda <- list(c(0.4,0.5, 0.2, 0.3), c(0.2,0.3, 0.4, 0.5), c(0.4,0.2, 0.2, 0.5))
+grade <- c(2,4,5)
+x <- seq(0,6, length.out=1000)
+plot(x,dpch(x=x, cuts= grade, levels=lambda[[1]]), type="l", lty=1, ylab="f(t)", xlab="Tempos")
+lines(x,dpch(x=x, cuts= grade, levels=lambda[[2]]), type="l", lty=2)
+lines(x,dpch(x=x, cuts= grade, levels=lambda[[3]]), type="l", lty=3)
+legend("topright", c("lambda1=(0.4,0.5, 0.2, 0.3)","lambda2=(0.2,0.3, 0.4, 0.5)", "lambda3=(0.4,0.2, 0.2, 0.5)"), lty=1:3, cex=0.8, bty="n")
+
+
+plot(x,ppch(x, cuts= grade, levels=lambda[[1]],lower.tail = FALSE), type="l", lty=1, ylab="S(t)", xlab="Tempos")
+lines(x,ppch(x, cuts= grade, levels=lambda[[2]], lower.tail = FALSE), type="l", lty=2)
+lines(x,ppch(x, cuts= grade, levels=lambda[[3]], lower.tail = FALSE), type="l", lty=3)
+legend("topright", c("lambda1=(0.4,0.5, 0.2, 0.3)","lambda2=(0.2,0.3, 0.4, 0.5)", "lambda3=(0.4,0.2, 0.2, 0.5)"), lty=1:3, cex=0.8, bty="n")
+
+plot(x,hpch(x=x, cuts= grade, levels=lambda[[1]]), type="l", lty=1, ylab="h(t)", xlab="Tempos", ylim=c(0,0.6))
+lines(x,hpch(x=x, cuts= grade, levels=lambda[[2]]), type="l", lty=2)
+lines(x,hpch(x=x, cuts= grade, levels=lambda[[3]]), type="l", lty=3)
+legend("topright", c("lambda1=(0.4,0.5, 0.2, 0.3)","lambda2=(0.2,0.3, 0.4, 0.5)", "lambda3=(0.4,0.2, 0.2, 0.5)"), lty=1:3, cex=0.8, bty="n")
+
+```
+
+
+
+# [Estimação dos parâmetros]{style="float:right;text-align:right;"} {background-color="#154D71"}
+
+
+## Estimação dos parâmetros
+### Introdução
+<hr>
+
+* Se corretamente especificado, os modelos paramétricos são bastante eficientes.
+* Inferência para as quantidades desconhecidas dos modelos é baseada na função de verossimilhança e suas propriedades assintóticas.
+* Cuidado na incorporação de censuras na função de verossimilhança.
+* Má especificação de um modelo paramétrico acarreta em vício na estimação das quantidades de interesse.
+* Técnicas de adequação, via resíduos, são fundamentais para verificar a adequação dos modelos paramétricos.
+
+
+## Estimação dos parâmetros
+<hr>
+
+* Sejam,
+   - $T_{i}$: tempo de falha do $i-$ésimo indivíduo com $f(\cdot)$ e $S(\cdot)$ .
+   - $C_{i}$: tempo de censura do $i-$ésimo indivíduo com $g(\cdot)$ e $G(\cdot)$.
+* O tempo observado e a variável indicadora de falha,
+
+$$
+y_{i}=\min(T_{i},C_{i}), \delta_{i} = \left\{\begin{array}{lll}
+1&, \ T_{i}<C_{i} & \mbox{tempo} \ \mbox{de} \ \mbox{falha},\\
+0&, \ T_{i}>C_{i} & \mbox{tempo} \ \mbox{de} \ \mbox{censura}.\\
+\end{array}\right.
+$$
+
+* Supondo que o mecanismo de censura é não informativo, ou seja, $T$ e $C$ são independentes.
+
+
+## Estimação dos parâmetros
+<hr>
+
+A construção da função de verossimilhança segue os seguintes passos:
+
+* O i-ésimo indivíduo é uma censura:
+  
+  
+$$
+P(y_{i}=t, \delta_{i}=0)=P(C_{i}=t, T_{i}>C_{i})=P(C_{i}=t, T_{i}>t)\stackrel{\text{ind}}{=}{}g(t)S(t)
+$$
+  
+* O i-ésimo indivíduo é um evento:
+  
+$$
+P(y_{i}=t, \delta_{i}=1)=P(T_{i}=t, T_{i}<C_{i})=P(T_{i}=t, C_{i}>t)\stackrel{\text{ind}}{=}{}f(t)G(t)
+$$
+
+Dessa forma a função de verossimilhança é dada por
+
+$$
+L(\mathbf{\theta}, \mathbf{\nu})=\prod_{i=1}^{n}\left[f(y_{i}\mid \mathbf{\theta})G(y_{i}\mid \mathbf{\nu})\right]^{\delta_{i}}\times \left[g(y_{i}\mid \mathbf{\nu})S(y_{i}\mid \mathbf{\theta})\right]^{1-\delta_{i}},
+$$
+$\mathbf{\theta}$ e $\mathbf{\nu}$ são os vetores de parâmetros da distribuição dos tempos de evento e censura, respectivamente.
+
+
+## Estimação dos parâmetros
+<hr>
+
+Usando a suposição de censura não-informativa,
+
+$$
+\begin{array}{ccl}
+L(\mathbf{\theta}, \mathbf{\nu})
+&=&\prod\limits_{i=1}^{n}\left[f(y_{i}\mid \mathbf{\theta})G(y_{i}\mid \mathbf{\nu})\right]^{\delta_{i}}\times \left[g(y_{i}\mid \mathbf{\nu})S(y_{i}\mid \mathbf{\theta})\right]^{1-\delta_{i}},\\
+&=& \prod\limits_{i=1}^{n}f(y_{i}\mid \mathbf{\theta})^{\delta_{i}}S(y_{i}\mid \mathbf{\theta})^{1-\delta_{i}}\times \prod\limits_{i=1}^{n} g(y_{i}\mid \mathbf{\nu})^{1-\delta_{i}}G(y_{i}\mid \mathbf{\nu})^{\delta_{i}},\\
+&=& L(\mathbf{\theta})L(\mathbf{\nu}).
+\end{array}
+$$
+
+Como o interesse principal consiste em estimar a distribuição dos tempos de evento, temos
+
+$$
+\begin{array}{ccl}
+L(\mathbf{\theta}, \mathbf{\nu})
+&\propto&\prod\limits_{i=1}^{n}f(y_{i}\mid \mathbf{\theta})^{\delta_{i}}S(y_{i}\mid \mathbf{\theta})^{1-\delta_{i}}\\
+&=& \prod\limits_{i=1}^{n}h(y_{i}\mid \mathbf{\theta})^{\delta_{i}}S(y_{i}\mid \mathbf{\theta}).\ \  \text{usando as relações!!}
+\end{array}
+$$
+
+
+## Estimação dos parâmetros
+### Método da máxima verossimilhança
+<hr>
+
+O vetor Escore é dado por,
+
+
+$$
+\begin{array}{ccl}
+U(\mathbf{\theta})
+&=&\dfrac{\partial\log L(\mathbf{\theta})}{\partial\mathbf{\theta}}.
+\end{array}
+$$
+
+
+O Estimador de Máxima Verossimilhança (EMV) é a solução do seguinte sistema de equações:
+
+$$U(\hat{\mathbf{\theta}})=\mathbf{0}.$$
+
+Métodos numéricos serão utilizados quando não houver solução analítica para este sistema de equações. (Ex: Newton Raphson, etc...)
+
+
+## Estimação dos parâmetros
+### Método de Newton Raphson
+<hr>
+
+
+O método segue o seguinte passo de iteração:
+
+$$\hat{\theta}^{k+1}=\hat{\theta}^{k}+\mathcal{I}(\hat{\theta}^{k})^{-1}U(\hat{\theta}^{k})$$
+
+em que $U$ é o vetor escore de primeiras derivadas e $\mathcal{I}$ é a matriz de informação observada.
+
+Usualmente o sistema é inicializado com $\theta^{0} = 1$.
+
+
+## Estimação dos parâmetros
+### Propriedades do EMV
+<hr>
+
+
+* O EMV tem, assintoticamente, distribuição normal;
+* O EMV é consistente;
+* A estatística da Razão de Verossimilhança (RV)
+
+$$-2 \log(L(\theta)=L(\hat{\theta})),$$
+
+
+tem, assintoticamente, uma distribuição qui-quadrado com gl igual a dimensão de $\theta$.
+
+* `Invariância`: Se $\hat{\theta}$ é o EMV de $\theta$, então $g(\hat{\theta})$ é o EMV de $g(\theta)$.
+
+
+## Estimação dos parâmetros
+### Quantidades importantes
+<hr>
+
+
+* Vetor Escore:
+
+$$U(\theta)=\dfrac{\partial\log L(\theta)}{\partial \theta}=\dfrac{\partial\ell(\theta)}{\partial \theta}.$$
+
+* Matriz de informação de Fisher:
+
+$$\mathcal{I}(\theta)=E\left[-\dfrac{\partial^{2}\log L(\theta)}{\partial \theta^{2}}\right]=E\left[-\dfrac{\partial^{2}\ell(\theta)}{\partial \theta^{2}}\right].$$
+
+* Matriz de informação observada:
+
+$$\mathcal{I}(\theta)\bigr\rvert_{\theta=\hat{\theta}}=-\dfrac{\partial^{2}\log L(\theta)}{\partial \theta^{2}}\bigr\rvert_{\theta=\hat{\theta}}=-\dfrac{\partial^{2}\ell(\theta)}{\partial \theta^{2}}\bigr\rvert_{\theta=\hat{\theta}}.$$
+
+
+## Estimação dos parâmetros
+### Resultados importantes
+<hr>
+
+
+:::{.callout-note}
+## Propriedade Importante:
+
+$$E(U(\theta)) = 0$$
+$$Var(\hat{\theta})\approx \mathcal{I}(\theta)^{-1}$$
+
+e
+
+$$Var(U(\theta)\approx \mathcal{I}(\theta)$$
+:::
+
+* Para $\mathcal{I}(\theta)$ ser obtida é necessário especificar uma distribuição para os tempos de censura.    
+
+* Isso não é razoável em análise de sobrevivência. No entanto, $\mathcal{I}(\theta)$ é bem estimada por usando o EMV.
+
+$$\hat{Var}(\hat{\theta})\approx \mathcal{I}(\hat{\theta})^{-1}$$
+
+
+## Estimação dos parâmetros
+### Estatísticas relacionadas ao EMV
+<hr>
+
+
+* Estatística de Wald na forma quadrática:
+
+$$W=(\hat{\theta}-\theta)^{t}\mathcal{I}(\theta)(\hat{\theta}-\theta)$$
+\noindent tem, para amostra grande, uma distribuição qui-quadrado com gl igual a dimensão de $\theta$.
+\vspace{0.3cm}
+
+* Razão de verossimilhança (RV):
+
+$$-2\log(L(\theta)/L(\hat{\theta}))=2(\ell(\hat{\theta})-\ell(\theta)).$$
+
+* Estatística Escore S (Estatística de Rao):
+
+$$U(\theta)^{t}\mathcal{I}(\theta)^{-1}U(\theta),$$
+
+para amostra grande, ambas estatísticas tem uma distribuição qui-quadrado com gl igual a dimensão de $\theta$.
+
+
+
+## Estimação dos parâmetros
+### Modelo Exponencial
+<hr>
+
+No caso do modelo exponencial, temos que a função de verossimilhança é dada por
+
+$$
+\begin{array}{ccl}
+L(\alpha)
+&=&\prod\limits_{i=1}^{n}\left[\alpha \exp\left\{ -\alpha y_{i}\right\}\right]^{\delta_{i}}\left[ \exp\left\{ -\alpha y_{i}\right\}\right]^{1-\delta_{i}}\\
+&=& \prod\limits_{i=1}^{n}\alpha^{\delta_{i}}\left[\exp\left\{ -\alpha y_{i}\right\}\right]
+\end{array}
+$$
+
+A função de log-verossimilhança e Escore:
+$$
+\ell(\alpha) = \log(\alpha)\sum\limits_{i=1}^{n}\delta_{i} -\alpha\sum\limits_{i=1}^{n} y_{i} ~~\rightarrow~~ \dfrac{\partial\log L(\alpha)}{\partial \alpha} = \dfrac{1}{\alpha}\sum\limits_{i=1}^{n}\delta_{i} -\sum\limits_{i=1}^{n}y_{i}. 
+$$
+
+## Estimação dos parâmetros
+### Modelo Exponencial
+<hr>
+
+Dessa forma, igualando a zero
+$$
+\hat{\alpha} = \dfrac{\sum\limits_{i=1}^{n}\delta_{i}}{\sum\limits_{i=1}^{n}y_{i}}= \dfrac{\text{Total de eventos}}{\sum\limits_{i=1}^{n}y_{i}}=\dfrac{1}{\dfrac{\sum\limits_{i=1}^{n}y_{i}}{\text{Total de eventos}}}.
+$$
+
+O termo $\sum\limits_{i=1}^{n}y_{i}$ é denominado tempo total sob teste. 
+
+Observe que se todas as observações fossem não-censuradas, $\hat{\alpha}=\dfrac{1}{\bar{y}}$, em que $\bar{y}$ é a média amostral.
+
+
+## Estimação dos parâmetros
+### Modelo Weibull
+<hr>
+
+
+No caso da distribuição de Weibull, temos que a função de verossimilhança é dada por
+$$
+\begin{array}{ccl}
+L(\alpha, \gamma)
+&=&\prod\limits_{i=1}^{n}\left[\alpha \gamma y_{i}^{\gamma-1} \exp\left\{ -(\alpha y_{i})^\gamma\right\}\right]^{\delta_{i}}\left[ \exp\left\{ -(\alpha y_{i})^\gamma\right\}\right]^{1-\delta_{i}}\\
+&=& \prod\limits_{i=1}^{n}\left[\alpha \gamma y_{i}^{\gamma-1}\right]^{\delta_{i}} \exp\left\{ -(\alpha y_{i})^\gamma\right\}.
+\end{array}
+$$
+
+A função de log-verossimilhança:
+$$
+\ell(\alpha) = \log(\alpha)\sum\limits_{i=1}^{n}\delta_{i}+\log(\gamma)\sum\limits_{i=1}^{n}\delta_{i} +(\gamma-1)\sum\limits_{i=1}^{n}\log(y_{i})-(\alpha y_{i})^\gamma.
+$$
+
+
+## Estimação dos parâmetros
+### Modelo Weibull
+<hr>
+
+O vetor escore é dado por
+
+$$U(\theta)=\dfrac{\partial\log L(\theta)}{\partial \theta}=\dfrac{\partial\ell(\theta)}{\partial \theta}.$$
+
+em que $\theta=\{\alpha, \gamma\}$.
+
+Para a obtenção do EMV, usa-se métodos numéricos pois não há solução analítica para este sistema de equações.
+
+
+## Estimação dos parâmetros
+### Exemplo
+<hr>
+
+* Dados provenientes da UFPR.
+* 20 pacientes com câncer de bexiga submetidos a um procedimento cirúrgico a laser.
+* `Resposta:` tempo da cirurgia até a reincidência da doença (meses).
+* `Objetivo:` mediano de vida destes pacientes.
+* `Dados (em meses):` 17 falhas e 3 censuras.
+
+
+## Estimação dos parâmetros
+### Exemplo
+<hr>
+
+
+::: columns
+:::: column
+```{r , comment="", warning=FALSE,message=FALSE}
+require(survival)
+#require(survminer)
+
+tempos<-c(3,5,6,7,8,9,10,10,12,15,15,18,19,20,22,25,28,30,40,45)
+cens<-c(1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0)
+dados <- data.frame(tempos, cens)
+ekm <- survfit(Surv(tempos, cens)~1)
+ekm
+```
+::::
+:::: column
+```{r , comment="", warning=FALSE,message=FALSE}
+
+summary(ekm)
+
+```
+::::
+:::
+
+## Estimação dos parâmetros
+### Exemplo
+<hr>
+
+
+Estimador de Kaplan-Meier
+
+```{r fig4_2, comment="", warning=FALSE,message=FALSE, fig.height=4, fig.width=4, fig.align='center'}
+
+plot(ekm, xlab="Tempo", 
+  ylab="S(t) estimada", mark.time=TRUE)
+
+
+```
+
+
+## Estimação dos parâmetros
+### Exemplo
+<hr>
+
+
+
+Ajuste pelo modelo Exponencial usando a função `survreg`.
+
+
+```{r, echo=TRUE, comment="", warning=FALSE, message=FALSE}
+
+ajust1<-survreg(Surv(tempos,cens)~1,dist='exponential')
+summary(ajust1)
+(alpha<-exp(ajust1$coefficients[1]))
+
+```
+
+
+## Estimação dos parâmetros
+### Exemplo
+<hr>
+
+
+
+Ajuste pelo modelo Weibull usando a função `\survreg`.
+
+::: columns
+
+:::: column
+
+```{r, echo=TRUE, comment="", warning=FALSE, message=FALSE}
+
+ajust2<-survreg(Surv(tempos,cens)~1,
+                dist='weibull')
+summary(ajust2)
+```
+::::
+
+:::: column
+```{r, echo=TRUE, comment="", warning=FALSE, message=FALSE}
+
+alpha<-exp(ajust2$coefficients[1])
+gama<-ajust2$scale
+cbind(gama, alpha)
+
+```
+::::
+
+:::
+
+
+## Estimação dos parâmetros
+### Exemplo
+<hr>
+
+
+Ajuste pelo modelo Weibull usando a função `survreg`.
+
+
+::: columns
+
+:::: column
+
+```{r, echo=TRUE, comment="", warning=FALSE, message=FALSE}
+
+ajust3<-survreg(Surv(tempos,cens)~1,
+                dist='lognormal')
+summary(ajust3)
+```
+::::
+
+:::: column
+```{r, echo=TRUE, comment="", warning=FALSE, message=FALSE}
+
+mu<-ajust3$coefficients[1]
+sigma<-ajust3$scale
+cbind(mu, sigma)
+
+```
+::::
+
+:::
+
+
+## Estimação dos parâmetros
+### Exemplo
+<hr>
+
+
+Função de sobrevivência.
+
+
+$$S_{E}(t)=\exp\left\{-`r round(1/exp(ajust1$coefficients[1]),2)`t\right\}$$
+
+$$S_{W}(t)=\exp\left\{-`r round(1/exp(ajust2$coefficients[1]),2)`t^{`r round(gama,2)`}\right\}$$
+
+$$S_{LN}(t)=\Phi\left[-(\log(t)-`r round(mu,2)`)/ `r round(sigma,2)`\right]$$
+
+
+
+
+
