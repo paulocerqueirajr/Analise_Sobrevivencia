@@ -1,0 +1,483 @@
+---
+format: 
+  revealjs:
+    theme: ["theme/q-theme.scss"]
+    slide-number: c/t
+    #logo: "https://www.faest.icen.ufpa.br/images/110.png"
+    #footer: "[https://github.com/paulocerqueirajr](https://https://github.com/paulocerqueirajr)"
+    code-copy: true
+    center-title-slide: false
+highlight-style: a11y
+code-link: true
+height: 1080
+width: 1900
+execute: 
+  eval: true
+  echo: true
+lang: pt
+---
+
+<h1> Análise de sobrevivência e  </h1>
+<h1>confiabilidade<h1>
+<h2> Modelos paramétricos </h2>
+
+<hr>
+
+<br>
+
+<h3> Prof. Paulo Cerqueira Jr <br>
+Programa de Pós-Graduação em Matemática e Estatística - PPGME <br> 
+Instituto de Ciências Exatas e Naturais - ICEN
+</h3>
+
+<h3>  </h3>
+<br>
+
+<h3> [https://github.com/paulocerqueirajr](https://https://github.com/paulocerqueirajr)
+
+![](imagens/github.jpg){.absolute top=700 left=845 height="80"}
+
+![](imagens/ppgme.jpg){.absolute top=5 left=1650 height="300"}
+
+
+
+# [Introdução]{style="float:right;text-align:right;"} {background-color="#154D71"}
+
+## Introdução
+<hr>
+
+* O método de máxima verossimilhança somente deve ser aplicado após ter sido definido um modelo probabilístico adequado para os dados. 
+
+* Se um modelo for usado inadequadamente, toda a análise estatística fica comprometida e consequentemente as respostas às perguntas de interesse ficam distorcidas.
+
+* A ideia empírica consiste em ajustar os modelos probabilísticos típicos para dados de tempos de vida e com base na comparação entre valores estimados e observados, decidir qual deles “melhor” se ajusta aos dados amostrais. 
+
+
+* A escolha da “melhor” distribuição pode ser feita por meio de técnicas gráficas ou testes de hipóteses com modelos encaixados.
+
+## Introdução
+<hr>
+
+
+* Método Gráfico.
+  - Modelo candidato $\times$ Kaplan-Meier.
+  - Linearização do modelo.
+* Teste de hipóteses: utilizar o TRV para comparar o modelo proposto com a gama generalizada.
+* Critérios informação.
+   - Critérios de informação de Akaike (AIC) e Bayesiano(BIC).
+
+## Métodos gráficos
+<hr>
+
+* Comparação direta da $S(t)$ estimada do modelo proposto com o Kaplan-Meier (no mesmo gráfico) e `selecionar o modelo cuja curva melhor se aproximar da curva`. 
+
+* Duas formas:
+   - $S_{KM}(t) \times S_{MP}(t)$;\pause
+   - $S_{KM}(t) \times \text{tempo}$ e $S_{MP}(t) \times \text{tempo}$, no mesmo gráfico.
+
+* Linearização da $S(t)$ para comparação com uma reta.
+
+
+## Métodos gráficos
+<hr>
+
+
+> Exponencial:
+
+$$S(t)=\exp\left\{ -\alpha t\right\} \rightarrow -\log[S(t)]=\alpha t.$$
+
+>Weibull:
+
+$$S(t)=\exp\left\{ -(\alpha t)^{\gamma}\right\} \rightarrow -\log[S(t)]=(\alpha t)^\gamma \rightarrow \log[-\log[S(t)]]=\gamma\log(\alpha)+\gamma\log(t).$$
+
+
+>  Lognormal:
+
+$$S(t)=\Phi\left\{ (-\log(t)+\mu)/\sigma\right\}\rightarrow \Phi^{-1}\left\{ S(t)\right\}=(-\log(t)+\mu)/\sigma.$$
+
+
+## Comparação para modelos encaixados
+### Teste da razão de verossimilhanças
+<hr>
+
+* Como foi dito anteriormente, as técnicas gráficas são extremamente úteis na seleção de modelos. 
+
+
+* Entretanto, as conclusões a partir delas podem diferir para diferentes analistas. 
+
+* Outra forma de discriminar modelos é através de testes de hipóteses e este caso, não envolve qualquer componente subjetivo na sua interpretação.
+
+* As hipóteses:
+
+$$H_{0}: \text{O modelo é adequado} \times H_{1}: \text{O modelo não é adequado} $$
+
+## Comparação para modelos encaixados
+### Teste da razão de verossimilhanças
+<hr>
+
+* Neste teste, usa-se a razão de verossimilhanças em modelos encaixados (Cox e Hinkley, 1977).
+
+* Ou seja, devemos usar um modelo generalizado tal que os de interesse sejam casos particulares.
+
+* O teste:
+  - Calcular $\log L(\hat{\theta}_{G})$;
+  - Calcular $\log L(\hat{\theta}_{M})$.
+
+## Comparação para modelos encaixados
+### Teste da razão de verossimilhanças
+<hr>
+
+* A estatística da razão de verossimilhanças
+
+$$TRV = -2\log \left[\dfrac{L(\hat{\theta}_{M})}{L(\hat{\theta}_{G})} \right]=2\log \left[\log L(\hat{\theta}_{G})-\log L(\hat{\theta}_{M}) \right],$$
+
+sob $H_0$, tem aproximadamente uma distribuição qui-quadrado com graus de
+liberdade igual a diferença do número de parâmetros dos modelos sendo comparados.
+
+
+## Critérios de informação
+<hr>
+
+* Após encontrar as estimativas dos parâmetros de interesse, os critérios de informação são usados para selecionar o melhor modelo ajustado aos dados em questão.
+
+> Critério de informação de Akaike (AIC):
+
+$$\text{AIC}= -2\ell(\theta\mid D) + 2k,$$
+
+em que $k$ é o número de parâmetros. 
+
+* Na presença de observações censuradas, o AIC pode não ser adequado. Dessa forma, Liang (2008), propôs uma versão modificada do AIC para dados censurados, e é expressa por
+
+$$\text{AIC}_{\text{SUR}}= -2\ell(\theta\mid D) + 2k + \dfrac{2(k+2)(k+3)}{n-k-3},$$
+
+em que $k$ é o número de parâmetros, $n$ é o tamanho amostral. 
+
+## Critérios de informação
+<hr>
+
+> Critério de infomação Bayesiano(BIC):
+
+* O critério de informação bayesiano é formalmente definido por
+
+$$BIC= -2\ell(\theta\mid D) + k \log(n).$$
+
+* Para cada critério definido, `o menor valor indica a melhor qualidade de ajuste aos dados de interesse`.
+
+
+
+## Exemplo:
+<hr>
+
+:::columns
+::::column
+
+*  Dados provenientes da UFPR.
+* 20 pacientes com câncer de bexiga submetidos a um
+procedimento cirúrgico a laser.
+* Resposta: tempo da cirurgia até a reincidência da doença
+(meses).
+* Objetivo: mediano de vida destes pacientes.
+* Dados (em meses): 17 falhas e 3 censuras.
+* Modelos ajustados: `Exponencial`, `Weibull` e `Lognormal` e `Gama generalizado`.
+
+```{r , comment="", warning=FALSE,message=FALSE}
+require(survival)
+require(flexsurv)
+
+#require(survminer)
+
+tempos<-c(3,5,6,7,8,9,10,10,12,15,15,18,
+          19,20,22,25,28,30,40,45)
+cens<-c(1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,
+        1,1,1,0)
+dados <- data.frame(tempos, cens)
+ekm <- survfit(Surv(tempos, cens)~1)
+
+```
+::::
+::::column
+
+```{r , comment="", warning=FALSE,message=FALSE}
+# Exponencial:
+ajust1 <- survreg(Surv(tempos,cens)~1,
+                  dist='exponential')
+alpha  <- 1/exp(ajust1$coefficients[1])
+
+# Weibull
+ajust2  <- survreg(Surv(tempos,cens)~1,
+                  dist='weibull')
+alpha.w <- exp(ajust2$coefficients[1])
+gama    <- 1/ajust2$scale
+```
+
+
+```{r , comment="", warning=FALSE,message=FALSE}
+# lognormal:
+ajust3 <- survreg(Surv(tempos,cens)~1,
+                 dist='lognormal')
+mu    <- ajust3$coefficients[1]
+sigma <- ajust3$scale
+
+# gamma:
+ajust4 <- flexsurvreg(Surv(tempos, cens) ~ 1, 
+                      dist = "gamma")
+shape.g <- 1/ajust4$coefficients[1]
+rate.g <- exp(ajust4$coefficients[2])
+```
+
+```{r , comment="", warning=FALSE,message=FALSE}
+# gamma Gen:
+ajust5 <- flexsurvreg(Surv(tempos, cens) ~ 1, 
+                      dist = "gengamma.orig")
+shape.gg    <- exp(ajust5$coefficients[1])
+scale.gg <- exp(ajust5$coefficients[2])
+k.gg     <- exp(ajust5$coefficients[3])
+```
+::::
+:::
+
+## Exemplo:
+### Função de sobrevivência estimada
+
+> Exponencial:
+
+$$S_{E}(t)=\exp\left\{-`r round(1/exp(ajust1$coefficients[1]),2)`t\right\}$$
+
+> Weibull:
+
+$$S_{W}(t)=\exp\left\{-`r round(1/exp(ajust2$coefficients[1]),2)`t^{`r round(gama,2)`}\right\}$$
+
+> Lognormal:
+
+$$S_{LN}(t)=\Phi\left[-(\log(t)-`r round(mu,2)`)/ `r round(sigma,2)`\right]$$
+
+
+* `Modelo Gama` e `Gama Generalizado` obtidos numericamente.
+
+
+## Exemplo - Método gráfico
+
+
+```{r , comment="", warning=FALSE, message=FALSE}
+#--- Função de sobrevivência:
+
+tempo <- ekm$time
+ste   <- exp(-alpha*tempo)
+stw   <- pweibull(q = tempo, shape = gama, scale = alpha.w, lower.tail = FALSE)
+stln  <- pnorm( -(log(tempo)-mu)/sigma )
+stgamma <- pgamma(q = tempo, shape = shape.g, rate=rate.g, 
+                   lower.tail = FALSE)
+stggamma <- pgengamma.orig(q = tempo, shape = shape.gg, 
+                           scale =scale.gg, k = k.gg, 
+                           lower.tail = FALSE)
+
+cbind(tempo, ekm=ekm$surv, ste, stw, stln, stgamma, stggamma)
+
+```
+
+## Exemplo - Método gráfico
+<hr>
+
+:::columns
+::::column
+Estimador de Kaplan-Meier $\times$ modelo ajustado.
+
+```{r,eval=FALSE, comment="", warning=FALSE,message=FALSE, fig.height=3.5, fig.width=3.5, fig.align='center'}
+
+tempo <- seq(0.0001, 50, length.out=1000)
+ste   <- exp(-alpha*tempo)
+stw   <- pweibull(q = tempo, shape = gama, 
+                  scale = alpha.w, 
+                  lower.tail = FALSE)
+stln  <- pnorm( -(log(tempo)-mu)/sigma )
+stgamma <- pgamma(q = tempo, shape = shape.g,
+                  rate=rate.g, lower.tail = FALSE)
+stggamma <- pgengamma.orig(q=tempo, shape=shape.gg, 
+                           scale =scale.gg,k=k.gg, 
+                           lower.tail = FALSE)
+```
+
+```{r,eval=FALSE}
+plot(ekm, xlab="Tempo", 
+  ylab="S(t)", mark.time=TRUE, conf.int=FALSE)
+lines(tempo, ste, col=1)
+lines(tempo, stw, col=2)
+lines(tempo, stln, col=3)
+lines(tempo, stgamma, col=4)
+lines(tempo, stggamma, col=5)
+legend("topright", c("Exp.", "W", "LN","G", "GG"), col=1:5, lty=1, bty="n")
+```
+::::
+:::: column
+```{r fig5_2,echo=FALSE, comment="", warning=FALSE,message=FALSE, fig.height=10, fig.width=10, fig.align='center'}
+
+
+tempo <- seq(0.0001, 50, length.out=1000)
+ste   <- exp(-alpha*tempo)
+stw   <- pweibull(q = tempo, shape = gama, 
+                  scale = alpha.w, 
+                  lower.tail = FALSE)
+stln  <- pnorm( -(log(tempo)-mu)/sigma )
+stgamma <- pgamma(q = tempo, shape = shape.g,
+                  rate=rate.g, lower.tail = FALSE)
+stggamma <- pgengamma.orig(q = tempo, shape = shape.gg, 
+                           scale =scale.gg, k = k.gg, 
+                           lower.tail = FALSE)
+plot(ekm, xlab="Tempo", 
+  ylab="S(t)", mark.time=TRUE, conf.int=FALSE)
+lines(tempo, ste, col=1)
+lines(tempo, stw, col=2)
+lines(tempo, stln, col=3)
+lines(tempo, stgamma, col=4)
+lines(tempo, stggamma, col=5)
+legend("topright", c("Exp.", "W", "LN","G", "GG"), col=1:5, lty=1, bty="n")
+```
+::::
+:::
+
+## Exemplo -  Método gráfico
+<hr>
+
+> Linearização
+
+
+```{r fig5_3, comment="", warning=FALSE,message=FALSE, fig.height=3, fig.width=8, fig.align='center'}
+
+par(mfrow=c(1,3))
+st    <-ekm$surv
+invst <-qnorm(st)
+
+plot(ekm$time, -log(st),pch=16,xlab="tempos",ylab="-log(S(t))", main="Exp.")
+plot(log(ekm$time),log(-log(st)),pch=16,xlab="log(tempos)",ylab="log(-log(S(t)))", main="Weib.")
+plot(log(ekm$time),invst, pch=16,xlab="log(tempos)", ylab=expression(Phi^-1 * (S(t))), main="LN.")
+```
+
+
+## Exemplo - TRV
+<hr>
+
+* Comparação do modelo de interesse como o modelo Geral
+
+```{r}
+trv_ge <- round(-2*( ajust1$loglik[1]-ajust5$loglik),2)
+p_trv_ge <- pchisq(trv_ge, df = 2, lower.tail = FALSE)
+trv_gw <- round(-2*( ajust2$loglik[1]-ajust5$loglik),2)
+p_trv_gw <- pchisq(trv_gw, df = 1, lower.tail = FALSE)
+trv_gln <- round(-2*( ajust3$loglik[1]-ajust5$loglik),2)
+p_trv_gln <- pchisq(trv_gln, df = 1, lower.tail = FALSE)
+trv_gg <- round(-2*( ajust4$loglik-ajust5$loglik),2)
+p_trv_gg <- pchisq(trv_gg, df = 1, lower.tail = FALSE)
+```
+
+
+| Modelo | $\log L(\theta)$ | TRV | p-valor |
+|:---:|:---:|:---:|:---:|
+| Gama gen. | `r round(ajust5$loglik,2)` | - | - |
+| Exponencial | `r round(ajust1$loglik[1],2)` | `r trv_ge` | `r p_trv_ge` |
+| Weibull | `r round(ajust2$loglik[1],2)` | `r trv_gw` | `r p_trv_gw` |
+| Log Normal | `r round(ajust3$loglik[1],2)` | `r trv_gln` | `r p_trv_gln` |
+| Gama | `r round(ajust4$loglik[1],2)` | `r trv_gg` | `r p_trv_gg` |
+
+
+
+<!-- \begin{table} -->
+<!--   \caption{Tabela} -->
+<!--   \label{tab:tab1} -->
+<!--   \begin{tabular}{ccccc}\hline -->
+<!--   Modelo & $\log L(\theta)$& TRV & p-valor\\ \hline -->
+<!--   Gama gen. & `r round(ajust5$loglik,2)`& -& -\\ -->
+<!--   Exponencial & `r round(ajust1$loglik[1],2)`& `r trv_ge`  & `r p_trv_ge`\\ -->
+<!--   Weibull & `r round(ajust2$loglik[1],2)`& `r trv_gw`&`r p_trv_gw`\\ -->
+<!--   Log Normal & `r round(ajust3$loglik[1],2)`& `r trv_gln`&`r p_trv_gln`\\ \hline -->
+<!--   \end{tabular} -->
+<!-- \end{table} -->
+
+
+## Critérios de informação
+<hr>
+
+Menores valores de AIC, $AIC_{Sur}$ e BIC indicam uma melhor qualidade de ajuste aos dados.
+
+```{r}
+aic_e <- round(AIC(ajust1, k=1),2)
+aic_w <- round(AIC(ajust2),2)
+aic_ln <- round(AIC(ajust3),2)
+aic_g <- round(AIC(ajust4),2)
+aic_gg <- round(ajust5$AIC,2)
+
+aic_s_e <- round(AIC(ajust1, k=1)+((2*(1+2)*(1+3))/(dim(dados)[1])-1-3 ),2)
+aic_s_w <- round(AIC(ajust2)+((2*(2+2)*(2+3))/(dim(dados)[1])-2-3 ),2)
+aic_s_ln <- round(AIC(ajust3)+((2*(2+2)*(2+3))/(dim(dados)[1])-2-3 ),2)
+aic_s_g <- round(AIC(ajust4)+((2*(2+2)*(2+3))/(dim(dados)[1])-2-3 ),2)
+aic_s_gg <- round(ajust5$AIC+((2*(2+2)*(2+3))/(dim(dados)[1])-2-3 ),2)
+
+bic_e  <- round(BIC(ajust1),2)
+bic_w  <- round(BIC(ajust2),2)
+bic_ln <- round(BIC(ajust3),2)
+bic_g <- round(BIC(ajust4),2)
+bic_gg <- round(BIC(ajust5),2)
+```
+
+
+
+| Modelo | AIC | $AIC_{surv}$ | BIC |
+|:---:|:---:|:---:|:---:|
+| Exponencial | `r aic_e` | `r aic_s_e` | `r bic_e` |
+| Weibull | `r aic_w` | `r aic_s_w` | `r aic_w` |
+| Log Normal | `r aic_ln` | `r aic_s_ln` | `r bic_ln` |
+| Gama | `r aic_g` | `r aic_s_g` | `r bic_g` |
+| Gama Gen. | `r aic_gg` | `r aic_s_gg` | `r bic_gg` |
+
+<!-- \begin{table} -->
+<!--   \caption{Tabela} -->
+<!--   \label{tab:tab1} -->
+<!--   \begin{tabular}{cccc}\hline -->
+<!--   Modelo & AIC& $AIC_{surv}$ & BIC\\ \hline -->
+<!--   Gama gen. & `r aic_gg`  & `r aic_s_gg`& `r bic_gg`\\ -->
+<!--   Exponencial &`r aic_e` & `r aic_s_e`&`r bic_e` \\ -->
+<!--   Weibull & `r aic_w`& `r aic_s_w`& `r aic_w`\\ -->
+<!--   Log Normal & `r aic_ln`& `r aic_s_ln` & `r bic_ln`\\\hline -->
+<!--   \end{tabular} -->
+<!-- \end{table} -->
+
+
+
+## Estimativas do modelo final
+<hr>
+
+:::columns
+::::column
+
+```{r fig5_4, comment="", warning=FALSE,message=FALSE, fig.height=8, fig.width=8, fig.align='center'}
+plot(ekm, xlab="Tempo", 
+  ylab="S(t)", mark.time=TRUE, conf.int=TRUE)
+lines(tempo, stln, col="red")
+legend("topright", c("EKM", "LN"), 
+       col=1:2, lty=1, bty="n")
+```
+
+::::
+::::column
+
+Estimativas sobre o tempo:
+
+> Tempo mediano (EKM):
+
+$$\hat{t}_{0,5;EKM}=`r summary(ekm)$table["median"]`\  \text{meses}.$$
+
+> Tempo mediano (Log-normal):
+
+$$\hat{t}_{0,5}=`r qlnorm(0.5, meanlog = mu, sdlog = sigma)`\  \text{meses}.$$
+
+> Tempo medio (Log-normal):
+
+$$\widehat{E(T)}=`r exp(mu+((sigma^2)/2))`\  \text{meses}.$$
+::::
+:::
+
+
+
+
+
+
+
