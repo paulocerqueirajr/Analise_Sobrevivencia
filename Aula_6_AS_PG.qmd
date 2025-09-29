@@ -1,0 +1,496 @@
+---
+format: 
+  revealjs:
+    theme: ["theme/q-theme.scss"]
+    slide-number: c/t
+    #logo: "https://www.faest.icen.ufpa.br/images/110.png"
+    #footer: "[https://github.com/paulocerqueirajr](https://https://github.com/paulocerqueirajr)"
+    code-copy: true
+    center-title-slide: false
+highlight-style: a11y
+code-link: true
+height: 1080
+width: 1900
+execute: 
+  eval: true
+  echo: true
+lang: pt
+---
+
+<h1> Análise de sobrevivência e  </h1>
+<h1>confiabilidade<h1>
+<h2> Modelos de regressão </h2>
+
+<hr>
+
+<br>
+
+<h3> Prof. Paulo Cerqueira Jr <br>
+Programa de Pós-Graduação em Matemática e Estatística - PPGME <br> 
+Instituto de Ciências Exatas e Naturais - ICEN
+</h3>
+
+<h3>  </h3>
+<br>
+
+<h3> [https://github.com/paulocerqueirajr](https://https://github.com/paulocerqueirajr)
+
+![](imagens/github.jpg){.absolute top=700 left=845 height="80"}
+
+![](imagens/ppgme.jpg){.absolute top=5 left=1650 height="300"}
+
+
+
+# [Introdução]{style="float:right;text-align:right;"} {background-color="#154D71"}
+
+## Introdução
+<hr>
+
+* Estudos clínicos/industriais/sociais, em geral, envolvem covariáveis que podem estar relacionadas com o tempo de sobrevivência.
+
+* Usualmente, o objetivo do estudo está relacionado a estas covariáveis.
+
+* As covariáveis podem ser:
+  - em estudos clínicos: gênero, idade, pressão arterial, presença de diabetes, etc;
+  - em estudo industriais: temperatura, dureza do material, voltagem, etc.
+
+
+## Introdução
+### Técnicas não-paramétricas
+<hr>
+
+
+
+
+* As técnicas não-paramétricas são limitadas na presença de covariáveis.
+
+* De forma a utilizar técnicas não-paramétricas necessitamos dividir em estratos de acordo com as categorias dessas covariáveis. 
+
+* Isto gera um número grande de estratos que podem conter poucas, ou talvez nenhuma observação e, portanto, impossibilita a incorporação de covariáveis, por exemplo, contínuas.
+
+* Covariáveis são acomodadas, naturalmente, em um modelo com `estrutura regressão`.
+
+* Modelos do tipo GAM (Generalized Additive Models) pode ser uma alternativa não-paramétrica para estas limitações.
+
+
+## Introdução
+### Modelagem
+<hr>
+
+
+* Tem-se duas classes de modelos de regressão para análise de
+dados de sobrevivência:
+
+1. Modelos paramétricos ou de tempos de vida acelerados:
+
+$$T = \exp\left(X^{'}\beta\right)T^{'} \ \text{ou} \ S(t\mid x)=S_{0}\left[t/\exp(\beta x) \right]$$
+
+2. Modelo semi-paramétrico ou de modelo de taxas de falha
+proporcionais ou, simplesmente, modelo de Cox:
+
+$$h(t\mid X)=h_{0}(t)\exp\left(X^{'}\beta\right) \ \text{ou} \ S(t\mid x)=\left[S_{0}(t)\right]^{\exp(\beta x)}$$
+
+
+
+* Em que:
+
+$X^{'}\beta:$ Preditor linear.
+
+$h_{0}(t):$ é a função de taxa de falha basal.
+
+
+# [Modelo de tempos de vida acelerados]{style="float:right;text-align:right;"} {background-color="#154D71"}
+
+## Modelo de tempos de vida acelerados (MTVA)
+<hr>
+
+
+* O MTVA pode ser estendido para a situação em que $p$ covariáveis são medidas para cada indivíduos no estudo.
+
+* A função de sobrevivência e taxa de falha são:
+
+$$S(t\mid x)=S_{0}\left[t/\exp(\textbf{X}^{'}\beta) \right] \ \text{e} \ h(t)=\exp(\textbf{X}^{'}\beta)h_{0}\left[t/\exp{(\textbf{X}^{'}\beta})\right].$$
+
+$S_{0}$ e $h_{0}$ são funções de base quando $x=0$.
+
+* De forma alternativa, os tempos de sobrevivência assume que a relação entre $\log T$ e $X$ é linear e pode ser escrito como
+
+$$\log T = \textbf{X}^{'}\beta+ \sigma \epsilon,$$
+
+$\beta=\{\beta_{k}: k=0,1,\dots, p\}$ e $X^{'}=\{1,x_{1}, x_{2}, \dots, x_{p}\}$, $\sigma>0$ é um parâmetro de escala e $\epsilon$ é o termo aleatório com função densidade g e função de sobrevivência G.
+
+
+## Modelo de tempos de vida acelerados (MTVA)
+<hr>
+
+* As distribuições usuais para o tempo até a falha é escala-forma.
+
+* Desta forma, modelamos $Y = \log T$ que é um modelo locação-escala.
+
+:::{.callout-note}
+## Características Gerais:
+
+* O modelo paramétrico específica um efeito multiplicativo das covariáveis em $T$. 
+* O papel de $X$ é acelerar ou desacelerar o tempo até a falha.
+* Os parâmetros do modelo são estimados pelo método de máxima verossimilhança.
+* A adequação do modelo ajustado é realizada utilizando os resíduos:
+  
+$$\hat{\nu}_{i}=\dfrac{Y_{i}-X_{i}^{'}\hat{\beta}}{\hat{\sigma}}, \quad i=1, \dots, n.$$
+:::
+
+## Modelo de tempos de vida acelerados (MTVA)
+<hr>
+
+* Covariáveis agem multiplicativamente na escala do tempo.
+
+* Modelo interpretado em termos da `velocidade de progressão do tempo` de acompanhamento.
+
+* Forma do Modelo para uma única covariável representada por
+dois grupos (0 e 1):
+
+$$S_{1}(t)=S_{0}(\phi t).$$
+
+
+  - Se $\phi< 1$, o grupo 1 tem o tempo acelerado quando comparado
+com o 0.
+  - Se $\phi<1$ e o evento for morte, o grupo 1 é melhor que o 0 no
+sentido que caminha para o evento de forma mais devagar.
+
+
+## Modelo de tempos de vida acelerados (MTVA)
+<hr>
+
+:::{.callout-note}
+## Interpretação
+
+* Forma do Modelo para uma única covariável representada por
+dois grupos (0 e 1):
+$$S_{1}(t)=S_{0}(\phi t).$$
+   - Interpretação em termos de percentis, em especial tempos
+medianos:
+  
+$$ S_{1}(t_{0.5}^{1})=S_{0}(t_{0.5}^{0})=0.5$$
+
+ou
+
+$$ S_{1}(t_{0.5}^{1})=S_{0}(\phi t_{0.5}^{1}) \ \text{ou} \ t_{0.5}^{0}=t_{0.5}^{1}\rightarrow \dfrac{t_{0.5}^{0}}{t_{0.5}^{1}}.$$
+
+
+que representa a razão dos tempos medianos.
+:::
+
+
+## Modelo de tempos de vida acelerados (MTVA)
+### Modelo de regressão Exponencial
+<hr>
+
+Assumindo a estrutura do MTVA, com $\sigma=1$, temos
+
+$$\log T_{i} = \textbf{X}_{i}^{'}\beta+ \epsilon_{i} = \mu_{i}+ \epsilon_{i},$$
+
+em que $\epsilon_{i}'s$ são iid com distribuição do valor extremo,
+
+$$
+\begin{array}{c}
+g(\epsilon)=\exp[ \epsilon -\exp(\epsilon)  ]\\
+G(\epsilon)=\exp[ -\exp(\epsilon)  ]
+\end{array}
+$$
+
+
+## Modelo de tempos de vida acelerados (MTVA)
+### Modelo de regressão Exponencial
+<hr>
+
+Assim, na escala $\log$, $Y$ tem uma distribuição do valor extremo padrão com parâmetro de locação $X^{'}\beta$:
+
+
+$$S(y\mid X)=\exp[ -\exp(y-X^{'}\beta)  ]$$
+
+ou na escala original, T tem uma distribuição exponencial com parâmetro de escala $\alpha=\exp(X^{'}\beta)$.
+
+A função de sobrevivência é dada por
+
+$$S(t\mid X)=\exp\left[ -\dfrac{t}{\exp(X^{'}\beta)}  \right].$$
+
+
+## Modelo de tempos de vida acelerados (MTVA)
+### Modelo de regressão de Weibull
+<hr>
+
+* De forma equivalente podemos definir o modelo Weibull:
+
+1. $T$ tem uma distribuição Weibull com parâmetro de escala $\alpha=\exp(X^{'}\beta)$ e de forma $\gamma$.
+  
+$$S(t\mid X)=\exp\left[ -\left(\dfrac{t}{\exp(X^{'}\beta)}\right)^{\gamma}\right].$$
+2. $Y$ tem distribuição do valor extremo padrão com parâmetros de locação $X^{'}\beta$ e escala $\sigma=1/\gamma$.  
+$$S(y\mid X)=\exp\left[ -\exp\left(\dfrac{y-X^{'}\beta}{\sigma}\right)\right].$$  
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Função de verossimilhança
+<hr>
+
+* A função de verossimilhança para uma amostra de tamanho $n$, sob o mecanismo de censura não-informativo, é dada por:
+$$
+\begin{array}{ccc}
+L(\beta, \sigma) &=& \prod\limits_{i=1}^{n} f(y_{i}\mid X_{i}, \beta, \sigma)^{\delta_{i}} S(y_{i}\mid X_{i}, \beta, \sigma)^{1-\delta_{i}}\\
+&\mbox{ou}&\\
+L(\beta,\gamma) &=& \prod\limits_{i=1}^{n} f(t_{i}\mid X_{i}, \beta,\gamma)^{\delta_{i}} S(t_{i}\mid X_{i}, \beta,\gamma)^{1-\delta_{i}}
+\end{array}
+$$
+
+em que $\delta_{i}$ é o indicador de falha para a $i-$ésima observação.
+
+
+* Valem todas as `propriedades`, para grandes amostras, do EMV e das estatísticas de teste.
+
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Interpretação dos parâmetros
+<hr>
+
+
+* Importante interpretar na escala de $T$. Observe sempre que usamos uma escala transformada (logarítmica) na modelagem estatística.
+
+* Lembre que:
+
+$$E(\log T) \neq \log E(T)$$
+
+
+* `Interpretação`: Razão de tempos medianos $= exp(\beta)$.
+
+* `Exemplo`: $\exp(\hat{\beta}) = 2$.
+
+Isto significa que o tempo mediano de um grupo é `duas vezes` o do outro grupo (mantendo fixa as demais covariáveis).
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Adequação do modelo
+<hr>
+
+
+* Uma avaliação da adequação do modelo ajustado é parte fundamental da análise dos dados. 
+
+* No modelo de regressão linear usual, uma análise gráfica dos resíduos é
+usada para esta finalidade. 
+
+* Técnicas gráficas, que fazem uso dos diferentes resíduos propostos são, em particular, bastante utilizadas para examinar diferentes aspectos do modelo. 
+
+* Um desses aspectos é o de avaliar, por meio dos resíduos, a distribuição dos erros. 
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Resíduos de Cox-Snell
+<hr>
+
+
+* Os resíduos de Cox-Snell (1968) são definidos como:
+
+$$\hat{e}_{i}=\hat{H}(t_{i}\mid X_{i})$$
+
+em que $\hat{H}(\cdot)$ é a função de taxa de falha acumulada do modelo em questão.
+
+
+* Modelos paramétricos:
+
+  - Exponencial: $\hat{e}_{i}=\left[ t_{i}\exp\{X_{i}\hat{\beta}\} \right]$.
+  - Weibull: $\hat{e}_{i}=\left[ t_{i}\exp\{X_{i}\hat{\beta}\} \right]^{\hat{\gamma}}$.
+  - Lognormal: $\hat{e}_{i}=-\log\left[1-\Phi\left(\dfrac{ \log(t_{i})-X_{i}\hat{\beta}}{\hat{\sigma}}\right)\right]$.
+
+
+* Se o modelo for adequado os $\hat{e}_{i}'s$ têm uma distribuição exponencial padrão $(\alpha=1)$.
+
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Resíduos de Padronizados
+<hr>
+
+
+* A definição dos resíduos padronizados:
+
+$$\hat{\nu}_{i}=\dfrac{y_{i}-X_{i}\hat{\beta}}{\hat{\sigma}}, \quad i=1, \dots, n.$$
+
+* Os resíduos vêm de uma população homogênea. Observe que os resíduos de observações censuradas, também são censurados.
+
+* Comparação dos resíduos do modelo proposto com o Kaplan-Meier.
+
+* Devemos usar os resíduos na escala original, $\exp(\hat{\nu}_{i})$, para compará-los com o `Kaplan-Meier`.
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Resíduos martingais
+<hr>
+
+
+* Os resíduos martingais são definidos por
+
+$$\hat{m}_{i}=\delta_{i}-\hat{e}_{i}, \quad i=1, \dots, n.$$
+em que $\delta_{i}$ é a variável indicadora de falha e $\hat{e}_i$ os resíduos de Cox-Snell.
+
+
+* São uma `ligeira modificação` dos resíduos de Cox-Snell.
+
+* São vistos como uma estimativa do número de falhas em excesso observada nos dados mas não predito pelo modelo. 
+
+* Os mesmos são usados, em geral, para examinar a melhor forma funcional (linear, quadrática etc.) para uma dada covariável.
+
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Resíduos Deviance
+<hr>
+
+
+* Os resíduos deviance nos modelos de regressão paramétricos são definidos por
+
+$$\hat{d}_{i}=\text{sinal}(\hat{m}_{i})\left[ -2\left( \hat{m}_{i}+\delta_{i}\log(\delta_{i}-\hat{m}_{i})   \right) \right]^{1/2}.$$
+
+* São uma tentativa de tornar os resíduos martingale mais simétricos
+em torno de zero.
+
+* Facilitam, em geral, a detecção de pontos atípicos (outliers).
+
+* Se o `modelo for apropriado`, estes resíduos deveriam apresentar um `comportamento aleatório em torno de zero`. 
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Testes de significância e critérios de informação
+<hr>
+
+
+* De forma adicional, pode-se realizar os testes de significância e os critérios de informação.
+
+* O teste da razão de verossimilhanças: avaliar se o modelo em questão é um modelo adequado.
+
+* Critérios de informação de Akaike e bayesiano: Escolher o modelo que apresentar o menor valor de critério.
+
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Dados de Leucemia
+<hr>
+
+
+* 17 pacientes com leucemia.
+
+* `Resposta:` tempo (semanas) do diagnóstico até a morte do
+paciente.
+
+* `Objetivo:` modelar a resposta em termos da contagem de glóbulos brancos (WBC) no diagnóstico.
+
+* Covariável `x = log10 WBC`.
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Dados de Leucemia
+<hr>
+
+* Este banco de dados foi exaustivamente analisado na literatura
+utilizando o modelo de regressão exponencial.
+
+
+| Temos | Exponencial | Weibull | Log-normal |
+|:---:|:---:|:---:|:---:|
+| $\hat{\beta}_{0}$ | 8,48 | 8,44 |  |
+| $\hat{\beta}_{1}$ | -1,11 | -1,10 |  |
+| $\gamma$ | 1 | 1,02 |  |
+| $\ell(\theta)$ | -83,88 | -83,87 | -83,76 |
+
+<!-- \begin{tabular}{cccc}\hline -->
+<!--  Temos  & Exponencial & Weibull & Log-normal \\ \hline -->
+<!--  $\hat{\beta}_{0}$ &8,48 & 8,44&  \\ -->
+<!--  $\hat{\beta}_{1}$ &-1,11 & -1,10&  \\ -->
+<!--  $\gamma$ &  1 &  1,02 & \\ -->
+<!--  $\ell(\bm{\theta})$&-83,88& -83,87& -83,76 \\\hline -->
+<!-- \end{tabular}  -->
+
+
+ 
+* Outros modelos mais flexíveis?
+
+* O ajuste pode ser feito usando a função `survreg()` do pacote `survival`.
+
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Dados de Leucemia
+<hr>
+
+<!-- \begin{center} -->
+<!--   \scalebox{0.5}{\includegraphics{Imagens/Ajust_Exp.png}} -->
+<!-- \end{center} -->
+
+
+![Modelo Exponencial](Imagens/Ajust_Exp.png)
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Interpretação do ajuste
+<hr>
+
+
+* $X$: $log_{10}$ WBC;
+
+* Interpretação na escala original WBC é multiplicativa;
+
+* Defina $p$: proporção de aumento/redução em WBC;
+
+* Temos pelo ajuste do modelo exponencial que $\hat{\beta_{1}}=-1,11$;
+
+* Logo, a razão dos tempos medianos:
+
+$$\hat{\text{RTM}}=\exp\left(\hat{\beta_{1}} \times \log_{10}(p)\right).$$
+Assim, temos:
+
+
+* $p=1,1$ (aumento de 10\%) - $\hat{\text{RTM}}=\exp\left(-1,11 \times \log_{10}(1,1)\right)=0,96.$
+
+* $p=1,2$ (aumento de 20\%) - $\hat{\text{RTM}}=\exp\left(-1,11 \times \log_{10}(1,2)\right)=0,92.$
+
+* $p=0,9$ (redução de 10\%) - $\hat{\text{RTM}}=\exp\left(-1,11 \times \log_{10}(0,9)\right)=1,05.$
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Curvas de sobrevivência
+<hr>
+
+
+
+A função de sobrevivência estimada é dada por
+
+$$\hat{S}(t\mid X)=\exp\left\{-\dfrac{t}{\exp\left( 8,48-1,11*X \right)}   \right\}.$$
+
+Para dois valores de $X=\{3,4\}$ no tempo $t=100$, temos
+
+$$\hat{S}(100\mid X)=\exp\left\{-\dfrac{t}{\exp\left( 8,48-1,11*3 \right)}   \right\}=0.559.$$
+
+e
+ 
+$$\hat{S}(100\mid X)=\exp\left\{-\dfrac{t}{\exp\left( 8,48-1,11*4 \right)}   \right\}=0,172.$$
+
+
+
+## Modelo de tempos de vida acelerados (MTVA)  
+### Curvas de sobrevivência
+<hr>
+
+
+![Modelo Exponencial](Imagens/Ajust_Exp2.png)
+
+
+<!-- \begin{center} -->
+<!--   \scalebox{0.5}{\includegraphics{Imagens/Ajust_Exp2.png}} -->
+<!-- \end{center} -->
+
+
+
+
+
+
+
+
+
+
+
